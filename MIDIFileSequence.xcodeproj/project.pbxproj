@@ -25,8 +25,9 @@
 		B012A101159A2206009A381D /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B012A0FE159A2206009A381D /* CoreMIDI.framework */; };
 		B012A106159A223D009A381D /* GDCoreAudioUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = B012A102159A223D009A381D /* GDCoreAudioUtils.c */; };
 		B012A107159A223D009A381D /* GDSoundEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = B012A105159A223D009A381D /* GDSoundEngine.m */; };
-		B012A10A159A2277009A381D /* gs_instruments.dls in Resources */ = {isa = PBXBuildFile; fileRef = B012A109159A2277009A381D /* gs_instruments.dls */; };
-		B012A10E159A2E20009A381D /* 006Harpsichord.mid in Resources */ = {isa = PBXBuildFile; fileRef = B012A10D159A2E20009A381D /* 006Harpsichord.mid */; };
+		BE2868CF19081C2300D91AE4 /* fluid_gm.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */; };
+		BE2868D319081D9600D91AE4 /* howDeepIsOceanBass.mid in Resources */ = {isa = PBXBuildFile; fileRef = BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */; };
+		BE2868D519081E3900D91AE4 /* midikittest1.mid in Resources */ = {isa = PBXBuildFile; fileRef = BE2868D419081E3900D91AE4 /* midikittest1.mid */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,8 +68,9 @@
 		B012A104159A223D009A381D /* GDSoundEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDSoundEngine.h; sourceTree = "<group>"; };
 		B012A105159A223D009A381D /* GDSoundEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDSoundEngine.m; sourceTree = "<group>"; };
 		B012A108159A2254009A381D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		B012A109159A2277009A381D /* gs_instruments.dls */ = {isa = PBXFileReference; lastKnownFileType = file; path = gs_instruments.dls; sourceTree = "<group>"; };
-		B012A10D159A2E20009A381D /* 006Harpsichord.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; name = 006Harpsichord.mid; path = MIDIFileSequence/006Harpsichord.mid; sourceTree = "<group>"; };
+		BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = fluid_gm.sf2; sourceTree = "<group>"; };
+		BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = howDeepIsOceanBass.mid; sourceTree = "<group>"; };
+		BE2868D419081E3900D91AE4 /* midikittest1.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = midikittest1.mid; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,8 +103,9 @@
 		B012A0B8159A21E8009A381D = {
 			isa = PBXGroup;
 			children = (
-				B012A10D159A2E20009A381D /* 006Harpsichord.mid */,
-				B012A109159A2277009A381D /* gs_instruments.dls */,
+				BE2868D419081E3900D91AE4 /* midikittest1.mid */,
+				BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */,
+				BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */,
 				B012A108159A2254009A381D /* README.md */,
 				B012A0CD159A21E9009A381D /* MIDIFileSequence */,
 				B012A0EB159A21EA009A381D /* MIDIFileSequenceTests */,
@@ -253,10 +256,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE2868CF19081C2300D91AE4 /* fluid_gm.sf2 in Resources */,
+				BE2868D519081E3900D91AE4 /* midikittest1.mid in Resources */,
+				BE2868D319081D9600D91AE4 /* howDeepIsOceanBass.mid in Resources */,
 				B012A0D2159A21E9009A381D /* InfoPlist.strings in Resources */,
 				B012A0DB159A21EA009A381D /* MainStoryboard.storyboard in Resources */,
-				B012A10A159A2277009A381D /* gs_instruments.dls in Resources */,
-				B012A10E159A2E20009A381D /* 006Harpsichord.mid in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +469,7 @@
 				B012A0F8159A21EC009A381D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B012A0F9159A21EC009A381D /* Build configuration list for PBXNativeTarget "MIDIFileSequenceTests" */ = {
 			isa = XCConfigurationList;
@@ -473,6 +478,7 @@
 				B012A0FB159A21EC009A381D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

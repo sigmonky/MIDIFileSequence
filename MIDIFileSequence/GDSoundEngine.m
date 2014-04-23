@@ -44,7 +44,7 @@
     if ( self = [super init] ) {
         [self createAUGraph];
         [self startGraph];
-        [self setupSampler:self.presetNumber];
+        //[self setupSampler:self.presetNumber];
         [self loadMIDIFile];
     }
     
@@ -155,7 +155,7 @@
      pathForResource:@"FluidR3_GM" ofType:@"sf2"]];
      */
     bankURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] 
-                                                  pathForResource:@"gs_instruments" ofType:@"dls"]];
+                                                  pathForResource:@"fluid_gm" ofType:@"sf2"]];
     NSLog(@"set pn %d", pn);
     
     // fill out a bank preset data structure
@@ -207,7 +207,7 @@
     //  NSString * fileName = @"006Harpsichord";
     
     NSURL *midiFileURL = [[NSURL alloc] initFileURLWithPath:
-                          [[NSBundle mainBundle] pathForResource:@"006Harpsichord" 
+                          [[NSBundle mainBundle] pathForResource:@"midikittest1" 
                                                           ofType:@"mid"]];
     if (midiFileURL) {
         NSLog(@"midiFileURL = '%@'\n", [midiFileURL description]);
@@ -253,6 +253,11 @@
         UInt32 lisize = sizeof(MusicTrackLoopInfo);
         CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
         NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
+        
+        loopInfo.loopDuration = 7;
+        loopInfo.numberOfLoops = 5;
+        
+        MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
         
         [self iterate:track];
     }
@@ -354,13 +359,18 @@
 - (void) playMIDIFile
 {
     NSLog(@"starting music player");
+    [self stopPlayintMIDIFile];
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)1.0),"MusicPlayerSetTime");
+    
+    CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,3.0),"MusicPlayerSetPlayRateScalar");
+
     CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");   
 }
 
 - (void) stopPlayintMIDIFile
 {
     NSLog(@"stopping music player");
-    CheckError(MusicPlayerStop(self.musicPlayer), "MusicPlayerStop");   
+       CheckError(MusicPlayerStop(self.musicPlayer), "MusicPlayerStop");
 }
 
 
