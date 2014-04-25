@@ -45,8 +45,12 @@
         [self createAUGraph];
         [self startGraph];
         //[self setupSampler:self.presetNumber];
-        [self loadMIDIFile];
-    }
+        [self loadMIDIFile:@"howDeepIsOceanBass"
+                startPoint:8.0
+                 loopCount:3
+                 loopDuration:12.0
+              playBackRate:1.0];
+         }
     
     return self;
 }
@@ -201,13 +205,16 @@
 	CheckError(MusicDeviceMIDIEvent(self.samplerUnit, noteCommand, noteNum, 0, 0), "NoteOff");
 }
 
-- (void) loadMIDIFile
+ - (void)loadMIDIFile:(NSString *)midifileName
+           startPoint:(float)startPoint
+            loopCount:(int)loopCount
+            loopDuration:(float)loopDuration
+         playBackRate:(float)playBackRate
+
 {
-    // NSString * fileName = @"Ya-Gotta-Try;
-    //  NSString * fileName = @"006Harpsichord";
     
     NSURL *midiFileURL = [[NSURL alloc] initFileURLWithPath:
-                          [[NSBundle mainBundle] pathForResource:@"midikittest1" 
+                          [[NSBundle mainBundle] pathForResource:midifileName
                                                           ofType:@"mid"]];
     if (midiFileURL) {
         NSLog(@"midiFileURL = '%@'\n", [midiFileURL description]);
@@ -254,13 +261,21 @@
         CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
         NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
         
-        loopInfo.loopDuration = 7;
-        loopInfo.numberOfLoops = 5;
+        loopInfo.loopDuration = loopDuration;
+        loopInfo.numberOfLoops = loopCount;
         
+        MusicTimeStamp adjTrackLength = 4.0;
         MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
+        MusicTrackSetProperty(track, kSequenceTrackProperty_TrackLength, &adjTrackLength, sizeof(adjTrackLength));
         
         [self iterate:track];
     }
+    
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)startPoint),"MusicPlayerSetTime");
+    
+    CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,playBackRate),
+               "MusicPlayerSetPlayRateScalar");
+
     
     CheckError(MusicPlayerPreroll(self.musicPlayer), "MusicPlayerPreroll");
 }
@@ -360,10 +375,6 @@
 {
     NSLog(@"starting music player");
     [self stopPlayintMIDIFile];
-    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)1.0),"MusicPlayerSetTime");
-    
-    CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,3.0),"MusicPlayerSetPlayRateScalar");
-
     CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");   
 }
 

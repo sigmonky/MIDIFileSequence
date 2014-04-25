@@ -19,6 +19,11 @@
 
 - (void)playNoteOn:(UInt32)noteNum :(UInt32)velocity;
 - (void)playNoteOff:(UInt32)noteNum;
+- (void)loadMIDIFile:(NSString *)midifileName
+          startPoint:(float)startPoint
+           loopCount:(int)loopCount
+           loopDuration:(float)loopDuration
+        playBackRate:(float)playBackRate;
 - (void) playMIDIFile;
 - (void) stopPlayintMIDIFile;
 
