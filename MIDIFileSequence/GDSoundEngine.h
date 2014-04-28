@@ -16,6 +16,7 @@
 @property (nonatomic) MusicPlayer musicPlayer;
 @property (nonatomic) MusicSequence musicSequence;
 @property (nonatomic) MusicTrack musicTrack;
+@property (nonatomic) id callBackMethod;
 
 - (void)playNoteOn:(UInt32)noteNum :(UInt32)velocity;
 - (void)playNoteOff:(UInt32)noteNum;

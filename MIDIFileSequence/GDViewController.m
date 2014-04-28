@@ -36,7 +36,18 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void) callBackMethod {
+    
+}
+
 - (IBAction)play:(UIButton *)sender {
+    [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"
+    startPoint:124.00
+    loopCount:3
+    loopDuration:16.0
+    playBackRate:2.0
+     
+     ];
     [self.soundEngine playMIDIFile];
 }
 @end

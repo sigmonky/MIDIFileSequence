@@ -45,12 +45,8 @@
         [self createAUGraph];
         [self startGraph];
         //[self setupSampler:self.presetNumber];
-        [self loadMIDIFile:@"howDeepIsOceanBass"
-                startPoint:8.0
-                 loopCount:3
-                 loopDuration:12.0
-              playBackRate:1.0];
-         }
+        
+    }
     
     return self;
 }
@@ -154,10 +150,6 @@
         return;
     }
     NSURL *bankURL;
-    /*
-     bankURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] 
-     pathForResource:@"FluidR3_GM" ofType:@"sf2"]];
-     */
     bankURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] 
                                                   pathForResource:@"fluid_gm" ofType:@"sf2"]];
     NSLog(@"set pn %d", pn);
@@ -266,7 +258,11 @@
         
         MusicTimeStamp adjTrackLength = 4.0;
         MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
-        MusicTrackSetProperty(track, kSequenceTrackProperty_TrackLength, &adjTrackLength, sizeof(adjTrackLength));
+        
+        CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
+        NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
+
+        //MusicTrackSetProperty(track, kSequenceTrackProperty_TrackLength, &adjTrackLength, sizeof(adjTrackLength));
         
         [self iterate:track];
     }
@@ -374,7 +370,7 @@
 - (void) playMIDIFile
 {
     NSLog(@"starting music player");
-    [self stopPlayintMIDIFile];
+    //[self stopPlayintMIDIFile];
     CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");   
 }
 
