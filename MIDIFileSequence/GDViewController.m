@@ -43,11 +43,23 @@
 - (IBAction)play:(UIButton *)sender {
     [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"
     startPoint:124.00
-    loopCount:3
+    loopCount:1
     loopDuration:16.0
-    playBackRate:2.0
+    playBackRate:1.0
      
      ];
     [self.soundEngine playMIDIFile];
+    NSTimer *monitor = [NSTimer scheduledTimerWithTimeInterval:.01
+                                                        target:self
+                                                      selector:@selector(monitorPlayback)
+                                                      userInfo:nil
+                                                       repeats:YES];
+    
 }
+
+- (void) monitorPlayback {
+    NSLog(@"monitor");
+    [self.soundEngine getPlayTime];
+}
+
 @end

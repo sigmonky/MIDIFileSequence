@@ -257,7 +257,9 @@
         loopInfo.numberOfLoops = loopCount;
         
         MusicTimeStamp adjTrackLength = 4.0;
-        MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
+        if (loopCount > 0) {
+            MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
+        }
         
         CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
         NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
@@ -371,8 +373,29 @@
 {
     NSLog(@"starting music player");
     //[self stopPlayintMIDIFile];
-    CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");   
+    CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");
+    
+   
 }
+
+- (void)getPlayTime {
+    MusicTimeStamp currentTime;
+    BOOL isPlaying;
+    CheckError(MusicPlayerGetTime(
+                self.musicPlayer,&currentTime),
+               "MusicPlayerGetTime"
+               );
+    //currentTime = fmod(currentTime, 16.0);
+   
+    CheckError(MusicPlayerIsPlaying(self.musicPlayer,&isPlaying),"MusicPlayerIsPlaying");
+    if (isPlaying && currentTime > 146.0 ) {
+        self.stopPlayintMIDIFile;
+    }
+    
+    
+     NSLog(@"%f --- %d",currentTime,isPlaying);
+}
+
 
 - (void) stopPlayintMIDIFile
 {
