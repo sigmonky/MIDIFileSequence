@@ -27,7 +27,7 @@
         playBackRate:(float)playBackRate;
 - (void) playMIDIFile;
 - (void) stopPlayintMIDIFile;
-- (void)getPlayTime;
+- (MusicTimeStamp)getPlayTime;
 
 
 @end

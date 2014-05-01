@@ -10,6 +10,7 @@
 
 @interface GDViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UILabel *TimeDisplay;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 - (IBAction)play:(UIButton *)sender;
 @end

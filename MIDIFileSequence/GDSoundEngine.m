@@ -378,22 +378,24 @@
    
 }
 
-- (void)getPlayTime {
+- (MusicTimeStamp)getPlayTime {
     MusicTimeStamp currentTime;
-    BOOL isPlaying;
+    Boolean isPlaying;
     CheckError(MusicPlayerGetTime(
                 self.musicPlayer,&currentTime),
                "MusicPlayerGetTime"
                );
-    //currentTime = fmod(currentTime, 16.0);
-   
+
     CheckError(MusicPlayerIsPlaying(self.musicPlayer,&isPlaying),"MusicPlayerIsPlaying");
     if (isPlaying && currentTime > 146.0 ) {
-        self.stopPlayintMIDIFile;
+        [self stopPlayintMIDIFile];
     }
     
+    if (!isPlaying) {
+        currentTime = -1.0;
+    }
     
-     NSLog(@"%f --- %d",currentTime,isPlaying);
+    return currentTime;
 }
 
 

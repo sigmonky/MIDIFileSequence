@@ -17,6 +17,10 @@
 @synthesize playButton;
 @synthesize soundEngine = _soundEngine;
 
+NSTimer *monitor;
+int lastMeasure = 0;
+int lastBeat = 0;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -49,17 +53,31 @@
      
      ];
     [self.soundEngine playMIDIFile];
-    NSTimer *monitor = [NSTimer scheduledTimerWithTimeInterval:.01
-                                                        target:self
-                                                      selector:@selector(monitorPlayback)
-                                                      userInfo:nil
-                                                       repeats:YES];
+    monitor = [NSTimer scheduledTimerWithTimeInterval:.05
+                                            target:self
+                                            selector:@selector(monitorPlayback)
+                                            userInfo:nil
+                                            repeats:YES];
     
 }
 
 - (void) monitorPlayback {
-    NSLog(@"monitor");
-    [self.soundEngine getPlayTime];
+    
+    MusicTimeStamp currentTime = [self.soundEngine getPlayTime];
+    if ( currentTime > 0) {
+        int measure = (int) currentTime/4.0;
+        int beat = (int) fmod(currentTime,4.0) + 1;
+        if ( beat != lastBeat || measure != lastMeasure ) {
+            //NSLog(@"%d:%d",measure,beat);
+            self.TimeDisplay.text = [NSString stringWithFormat:@"%d:%d",measure,beat];
+            lastMeasure = measure;
+            lastBeat = beat;
+        }
+    } else {
+        NSLog(@"Done");
+        [monitor invalidate];
+    }
+
 }
 
 @end
