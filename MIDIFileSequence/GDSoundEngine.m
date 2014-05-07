@@ -256,7 +256,6 @@
         loopInfo.loopDuration = loopDuration;
         loopInfo.numberOfLoops = loopCount;
         
-        MusicTimeStamp adjTrackLength = 4.0;
         if (loopCount > 0) {
             MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
         }
@@ -296,7 +295,7 @@
     while (hasCurrentEvent)
     {
         MusicEventIteratorGetEventInfo(iterator, &eventTimeStamp, &eventType, &eventData, &eventDataSize);
-        NSLog(@"event timeStamp %f ", eventTimeStamp);
+        //NSLog(@"event timeStamp %f ", eventTimeStamp);
         switch (eventType) {
                 
             case kMusicEventType_ExtendedNote : {
@@ -328,10 +327,10 @@
                 
             case kMusicEventType_MIDINoteMessage : {
                 MIDINoteMessage* note_evt = (MIDINoteMessage*)eventData;
-                NSLog(@"note event channel %d", note_evt->channel);
+                /*NSLog(@"note event channel %d", note_evt->channel);
                 NSLog(@"note event note %d", note_evt->note);
                 NSLog(@"note event duration %f", note_evt->duration); 
-                NSLog(@"note event velocity %d", note_evt->velocity);}
+                NSLog(@"note event velocity %d", note_evt->velocity);*/}
                 break ;
                 
             case kMusicEventType_MIDIChannelMessage : {
@@ -378,6 +377,10 @@
    
 }
 
+- (void) setPlayerTime:(float)playerStartTime {
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)playerStartTime), "MusicPlayerStart");
+}
+
 - (MusicTimeStamp)getPlayTime {
     MusicTimeStamp currentTime;
     Boolean isPlaying;
@@ -387,7 +390,7 @@
                );
 
     CheckError(MusicPlayerIsPlaying(self.musicPlayer,&isPlaying),"MusicPlayerIsPlaying");
-    if (isPlaying && currentTime > 146.0 ) {
+    if (isPlaying && currentTime > 152.0 ) {
         [self stopPlayintMIDIFile];
     }
     

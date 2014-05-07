@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
-        <deployment defaultVersion="1296" identifier="iOS"/>
+        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
@@ -9,13 +9,20 @@
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="GDViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iXl-34-0xK"/>
+                        <viewControllerLayoutGuide type="bottom" id="HOF-9R-ce7"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bVR-Yq-nbA">
-                                <rect key="frame" x="124" y="201" width="72" height="37"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bVR-Yq-nbA">
+                                <rect key="frame" x="124" y="50" width="72" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="j6I-Mi-T6i"/>
+                                </constraints>
                                 <state key="normal" title="Play">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -23,14 +30,20 @@
                                     <action selector="play:" destination="2" eventType="touchUpInside" id="ab5-5U-6UH"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="T3b-mr-xbq">
-                                <rect key="frame" x="139" y="261" width="43" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3b-mr-xbq">
+                                <rect key="frame" x="139" y="90" width="43" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="centerX" secondItem="T3b-mr-xbq" secondAttribute="centerX" id="DWb-jY-SOg"/>
+                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="top" secondItem="iXl-34-0xK" secondAttribute="bottom" constant="30" id="T4J-xH-3yT"/>
+                            <constraint firstItem="T3b-mr-xbq" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" id="VIm-aJ-L4S"/>
+                            <constraint firstItem="T3b-mr-xbq" firstAttribute="top" secondItem="bVR-Yq-nbA" secondAttribute="bottom" constant="10" id="XWn-1p-pyY"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="TimeDisplay" destination="T3b-mr-xbq" id="TnG-QV-MdS"/>

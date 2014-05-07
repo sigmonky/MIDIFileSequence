@@ -28,6 +28,7 @@
 - (void) playMIDIFile;
 - (void) stopPlayintMIDIFile;
 - (MusicTimeStamp)getPlayTime;
+- (void) setPlayerTime:(float)playerStartTime;
 
 
 @end

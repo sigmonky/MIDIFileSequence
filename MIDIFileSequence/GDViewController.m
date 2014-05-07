@@ -20,17 +20,36 @@
 NSTimer *monitor;
 int lastMeasure = 0;
 int lastBeat = 0;
+int loopCount = 0;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     self.soundEngine = [[GDSoundEngine alloc] init];
+#ifdef CHEESEFUCK
+    NSLog(@"you are cheesefucked");
+#endif
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 44);
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:self action:@selector(btnItem1Pressed:)];
+    
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:self action:@selector(btnItem2Pressed:)];
+    
+     [toolbar setItems:[[NSArray alloc] initWithObjects:leftButton,flex,rightButton, nil]];
+    
+    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin| UIViewAutoresizingFlexibleRightMargin ;
+    
+    [self.view addSubview:toolbar];
+    
 }
 
 - (void)viewDidUnload
 {
     [self setPlayButton:nil];
+    
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -46,9 +65,9 @@ int lastBeat = 0;
 
 - (IBAction)play:(UIButton *)sender {
     [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"
-    startPoint:124.00
-    loopCount:1
-    loopDuration:16.0
+    startPoint:7.9
+    loopCount:0
+    loopDuration:0
     playBackRate:1.0
      
      ];
@@ -68,14 +87,23 @@ int lastBeat = 0;
         int measure = (int) currentTime/4.0;
         int beat = (int) fmod(currentTime,4.0) + 1;
         if ( beat != lastBeat || measure != lastMeasure ) {
-            //NSLog(@"%d:%d",measure,beat);
             self.TimeDisplay.text = [NSString stringWithFormat:@"%d:%d",measure,beat];
             lastMeasure = measure;
             lastBeat = beat;
         }
+        if (currentTime > 12) {
+            [self.soundEngine setPlayerTime:7.99];
+            loopCount++;
+            if ( loopCount == 5) {
+                [monitor invalidate];
+                [self.soundEngine stopPlayintMIDIFile];
+                loopCount = 0;
+            }
+        }
     } else {
         NSLog(@"Done");
-        [monitor invalidate];
+        //[monitor invalidate];
+        
     }
 
 }
