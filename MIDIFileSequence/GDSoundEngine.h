@@ -17,15 +17,13 @@
 @property (nonatomic) MusicSequence musicSequence;
 @property (nonatomic) MusicTrack musicTrack;
 @property (nonatomic) id callBackMethod;
+@property (nonatomic) MusicTimeStamp trackLength;
 
 - (void)playNoteOn:(UInt32)noteNum :(UInt32)velocity;
 - (void)playNoteOff:(UInt32)noteNum;
-- (void)loadMIDIFile:(NSString *)midifileName
-          startPoint:(float)startPoint
-           loopCount:(int)loopCount
-           loopDuration:(float)loopDuration
-        playBackRate:(float)playBackRate;
-- (void) playMIDIFile;
+- (void)loadMIDIFile:(NSString *)midifileName;
+- (void) playMIDIFile:(MusicTimeStamp)startPoint
+         playBackRate:(float)playBackRate;
 - (void) stopPlayintMIDIFile;
 - (MusicTimeStamp)getPlayTime;
 - (void) setPlayerTime:(float)playerStartTime;

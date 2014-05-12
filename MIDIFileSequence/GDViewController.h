@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface GDViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UISlider *startLoopSlider;
+@property (weak, nonatomic) IBOutlet UISlider *endloopSlider;
 
 @property (weak, nonatomic) IBOutlet UILabel *TimeDisplay;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 - (IBAction)play:(UIButton *)sender;
+- (IBAction)resetStartLoop:(id)sender;
+- (IBAction)resetEndLoop:(id)sender;
+- (IBAction)loadMidi:(id)sender;
 @end

@@ -198,11 +198,6 @@
 }
 
  - (void)loadMIDIFile:(NSString *)midifileName
-           startPoint:(float)startPoint
-            loopCount:(int)loopCount
-            loopDuration:(float)loopDuration
-         playBackRate:(float)playBackRate
-
 {
     
     NSURL *midiFileURL = [[NSURL alloc] initFileURLWithPath:
@@ -248,33 +243,19 @@
         CheckError(MusicTrackGetProperty(track, kSequenceTrackProperty_TrackLength, &track_length, &tracklength_size), "kSequenceTrackProperty_TrackLength");
         NSLog(@"Track length %f", track_length);
         
+        self.trackLength = track_length;
+        
         MusicTrackLoopInfo loopInfo;
         UInt32 lisize = sizeof(MusicTrackLoopInfo);
         CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
         NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
         
-        loopInfo.loopDuration = loopDuration;
-        loopInfo.numberOfLoops = loopCount;
-        
-        if (loopCount > 0) {
-            MusicTrackSetProperty(track, kSequenceTrackProperty_LoopInfo, &loopInfo, sizeof(loopInfo));
-        }
-        
-        CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
-        NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
 
         //MusicTrackSetProperty(track, kSequenceTrackProperty_TrackLength, &adjTrackLength, sizeof(adjTrackLength));
         
         [self iterate:track];
     }
     
-    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)startPoint),"MusicPlayerSetTime");
-    
-    CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,playBackRate),
-               "MusicPlayerSetPlayRateScalar");
-
-    
-    CheckError(MusicPlayerPreroll(self.musicPlayer), "MusicPlayerPreroll");
 }
 
 
@@ -368,10 +349,19 @@
     }
 }
 
-- (void) playMIDIFile
+- (void) playMIDIFile:(MusicTimeStamp)startPoint
+         playBackRate:(float)playBackRate
 {
     NSLog(@"starting music player");
-    //[self stopPlayintMIDIFile];
+    [self stopPlayintMIDIFile];
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)startPoint),"MusicPlayerSetTime");
+    
+    CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,playBackRate),
+               "MusicPlayerSetPlayRateScalar");
+    
+    
+    CheckError(MusicPlayerPreroll(self.musicPlayer), "MusicPlayerPreroll");
+
     CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");
     
    

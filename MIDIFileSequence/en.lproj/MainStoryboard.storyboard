@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bVR-Yq-nbA">
-                                <rect key="frame" x="124" y="50" width="72" height="30"/>
+                                <rect key="frame" x="124" y="47" width="72" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="72" id="j6I-Mi-T6i"/>
+                                    <constraint firstAttribute="width" constant="72" id="S48-Ri-7pa"/>
                                 </constraints>
                                 <state key="normal" title="Play">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -30,24 +30,64 @@
                                     <action selector="play:" destination="2" eventType="touchUpInside" id="ab5-5U-6UH"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3b-mr-xbq">
-                                <rect key="frame" x="139" y="90" width="43" height="21"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5M1-yj-xjJ">
+                                <rect key="frame" x="44" y="47" width="72" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="abw-0E-hld"/>
+                                </constraints>
+                                <state key="normal" title="Load">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loadMidi:" destination="2" eventType="touchUpInside" id="OxT-Lu-5vh"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3b-mr-xbq">
+                                <rect key="frame" x="139" y="85" width="44" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="k4B-Xa-dpD"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="XbS-JF-NwX">
+                                <rect key="frame" x="38" y="139" width="264" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="resetStartLoop:" destination="2" eventType="valueChanged" id="hhO-oI-NLX"/>
+                                </connections>
+                            </slider>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="hQA-eT-U9W">
+                                <rect key="frame" x="38" y="189" width="264" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="resetEndLoop:" destination="2" eventType="valueChanged" id="NjJ-Vo-OS2"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="centerX" secondItem="T3b-mr-xbq" secondAttribute="centerX" id="DWb-jY-SOg"/>
-                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="top" secondItem="iXl-34-0xK" secondAttribute="bottom" constant="30" id="T4J-xH-3yT"/>
-                            <constraint firstItem="T3b-mr-xbq" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" id="VIm-aJ-L4S"/>
-                            <constraint firstItem="T3b-mr-xbq" firstAttribute="top" secondItem="bVR-Yq-nbA" secondAttribute="bottom" constant="10" id="XWn-1p-pyY"/>
+                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="leading" secondItem="5M1-yj-xjJ" secondAttribute="trailing" constant="8" id="0l2-Pg-fca"/>
+                            <constraint firstItem="XbS-JF-NwX" firstAttribute="top" secondItem="T3b-mr-xbq" secondAttribute="bottom" constant="33" id="3s0-Mw-3MV"/>
+                            <constraint firstItem="hQA-eT-U9W" firstAttribute="trailing" secondItem="XbS-JF-NwX" secondAttribute="trailing" id="4bV-Iz-Seb"/>
+                            <constraint firstItem="XbS-JF-NwX" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="40" id="98L-sF-mYh"/>
+                            <constraint firstAttribute="trailing" secondItem="XbS-JF-NwX" secondAttribute="trailing" constant="20" symbolic="YES" id="IK1-c0-zvQ"/>
+                            <constraint firstItem="T3b-mr-xbq" firstAttribute="top" secondItem="bVR-Yq-nbA" secondAttribute="bottom" constant="8" symbolic="YES" id="S7q-sl-SVW"/>
+                            <constraint firstItem="hQA-eT-U9W" firstAttribute="top" secondItem="XbS-JF-NwX" secondAttribute="bottom" constant="20" id="WDc-ZD-Igb"/>
+                            <constraint firstAttribute="centerX" secondItem="T3b-mr-xbq" secondAttribute="centerX" constant="-1" id="YpE-Xp-71b"/>
+                            <constraint firstItem="XbS-JF-NwX" firstAttribute="leading" secondItem="hQA-eT-U9W" secondAttribute="leading" id="hbA-1a-jYy"/>
+                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" id="iQE-MQ-dL2"/>
+                            <constraint firstItem="5M1-yj-xjJ" firstAttribute="baseline" secondItem="bVR-Yq-nbA" secondAttribute="baseline" id="jWc-ud-d1Z"/>
+                            <constraint firstItem="bVR-Yq-nbA" firstAttribute="top" secondItem="iXl-34-0xK" secondAttribute="bottom" constant="27" id="qAt-kn-2Sf"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="TimeDisplay" destination="T3b-mr-xbq" id="TnG-QV-MdS"/>
+                        <outlet property="endloopSlider" destination="hQA-eT-U9W" id="Lw2-is-2OG"/>
                         <outlet property="playButton" destination="bVR-Yq-nbA" id="GC9-It-fWv"/>
+                        <outlet property="startLoopSlider" destination="XbS-JF-NwX" id="cvW-im-G2Y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>

@@ -16,6 +16,8 @@
 @implementation GDViewController
 @synthesize playButton;
 @synthesize soundEngine = _soundEngine;
+@synthesize startLoopSlider;
+@synthesize endloopSlider;
 
 NSTimer *monitor;
 int lastMeasure = 0;
@@ -27,9 +29,7 @@ int loopCount = 0;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     self.soundEngine = [[GDSoundEngine alloc] init];
-#ifdef CHEESEFUCK
-    NSLog(@"you are cheesefucked");
-#endif
+
     UIToolbar *toolbar = [[UIToolbar alloc] init];
     toolbar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 44);
     UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:self action:@selector(btnItem1Pressed:)];
@@ -44,7 +44,10 @@ int loopCount = 0;
     
     [self.view addSubview:toolbar];
     
+    
+    
 }
+
 
 - (void)viewDidUnload
 {
@@ -64,20 +67,32 @@ int loopCount = 0;
 }
 
 - (IBAction)play:(UIButton *)sender {
-    [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"
-    startPoint:7.9
-    loopCount:0
-    loopDuration:0
-    playBackRate:1.0
-     
+     MusicTimeStamp startTime = ([self.soundEngine trackLength] * startLoopSlider.value);
+    [self.soundEngine playMIDIFile:startTime
+                        playBackRate:1.0
      ];
-    [self.soundEngine playMIDIFile];
     monitor = [NSTimer scheduledTimerWithTimeInterval:.05
                                             target:self
                                             selector:@selector(monitorPlayback)
                                             userInfo:nil
                                             repeats:YES];
     
+}
+
+- (IBAction)resetStartLoop:(id)sender {
+    NSLog(@"start loop ....%f",startLoopSlider.value);
+    NSLog (@"%f",[self.soundEngine trackLength] * startLoopSlider.value);
+}
+
+- (IBAction)resetEndLoop:(id)sender {
+     NSLog(@"start loop ....%f",endloopSlider.value);
+    NSLog (@"%f",[self.soundEngine trackLength] * endloopSlider.value);
+}
+
+- (IBAction)loadMidi:(id)sender {
+    
+   
+    [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"];
 }
 
 - (void) monitorPlayback {
@@ -91,8 +106,8 @@ int loopCount = 0;
             lastMeasure = measure;
             lastBeat = beat;
         }
-        if (currentTime > 12) {
-            [self.soundEngine setPlayerTime:7.99];
+        if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
+            [self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
             loopCount++;
             if ( loopCount == 5) {
                 [monitor invalidate];
