@@ -228,7 +228,7 @@
     CheckError(MusicSequenceSetAUGraph(self.musicSequence, self.processingGraph),
                "MusicSequenceSetAUGraph");
      
-    CAShow(self.musicSequence);
+    //CAShow(self.musicSequence);
     
     UInt32 trackCount;
     CheckError(MusicSequenceGetTrackCount(self.musicSequence, &trackCount), "MusicSequenceGetTrackCount");
@@ -276,7 +276,7 @@
     while (hasCurrentEvent)
     {
         MusicEventIteratorGetEventInfo(iterator, &eventTimeStamp, &eventType, &eventData, &eventDataSize);
-        //NSLog(@"event timeStamp %f ", eventTimeStamp);
+        NSLog(@"event timeStamp %f ", eventTimeStamp);
         switch (eventType) {
                 
             case kMusicEventType_ExtendedNote : {
@@ -308,10 +308,12 @@
                 
             case kMusicEventType_MIDINoteMessage : {
                 MIDINoteMessage* note_evt = (MIDINoteMessage*)eventData;
-                /*NSLog(@"note event channel %d", note_evt->channel);
+                NSLog(@"note event channel %d", note_evt->channel);
                 NSLog(@"note event note %d", note_evt->note);
                 NSLog(@"note event duration %f", note_evt->duration); 
-                NSLog(@"note event velocity %d", note_evt->velocity);*/}
+                NSLog(@"note event velocity %d", note_evt->velocity);
+               
+            }
                 break ;
                 
             case kMusicEventType_MIDIChannelMessage : {

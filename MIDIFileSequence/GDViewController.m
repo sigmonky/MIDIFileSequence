@@ -23,6 +23,8 @@ NSTimer *monitor;
 int lastMeasure = 0;
 int lastBeat = 0;
 int loopCount = 0;
+MusicTimeStamp startBeat = 0.0;
+MusicTimeStamp endBeat = 0.0;
 
 - (void)viewDidLoad
 {
@@ -79,20 +81,44 @@ int loopCount = 0;
     
 }
 
+- (MusicTimeStamp) getStartingBar:(MusicTimeStamp)rawMidiTime {
+    
+    startBeat = floor(rawMidiTime/4.0);
+    NSLog(@"the beat is %f -- start bar is %f",rawMidiTime,startBeat);
+    
+    return rawMidiTime;
+}
+
+- (MusicTimeStamp) getEndingBar:(MusicTimeStamp)rawMidiTime {
+    
+    endBeat = floor(rawMidiTime/4.0) + 1.0;
+    NSLog(@"the beat is %f -- end bar is %f",rawMidiTime,endBeat);
+    
+    return rawMidiTime;
+}
+
 - (IBAction)resetStartLoop:(id)sender {
-    NSLog(@"start loop ....%f",startLoopSlider.value);
-    NSLog (@"%f",[self.soundEngine trackLength] * startLoopSlider.value);
+    MusicTimeStamp currentBeat = [self.soundEngine trackLength] * startLoopSlider.value;
+    //[self getStartingBar:currentBeat];
+    //NSLog(@"start bar: %f ending bar %f",self.startLoopSlider.value,self.endloopSlider.value);
+    NSLog(@"start bar: %d ending bar %d",(NSUInteger)(self.startLoopSlider.value + 0.5),(NSUInteger)(self.endloopSlider.value + 0.5));    
 }
 
 - (IBAction)resetEndLoop:(id)sender {
-     NSLog(@"start loop ....%f",endloopSlider.value);
-    NSLog (@"%f",[self.soundEngine trackLength] * endloopSlider.value);
+    MusicTimeStamp currentBeat = [self.soundEngine trackLength] * endloopSlider.value;
+    
+    //(NSUInteger)(self.startLoopSlider.value.value + 0.5)
+    //(NSUInteger)(self.endloopSlider.value.value + 0.5)
+     NSLog(@"start bar: %d ending bar %d",(NSUInteger)(self.startLoopSlider.value + 0.5),(NSUInteger)(self.endloopSlider.value + 0.5));
 }
 
 - (IBAction)loadMidi:(id)sender {
-    
-   
+     
     [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"];
+    self.startLoopSlider.minimumValue = 0.0f;
+    self.startLoopSlider.maximumValue = 31.0f;
+    self.endloopSlider.minimumValue = 0.0f;
+    self.endloopSlider.maximumValue = 31.0f;
 }
 
 - (void) monitorPlayback {
@@ -106,8 +132,10 @@ int loopCount = 0;
             lastMeasure = measure;
             lastBeat = beat;
         }
-        if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-            [self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
+        //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
+        if (currentTime >= 12.0) {
+            //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
+            [self.soundEngine setPlayerTime:8.0];
             loopCount++;
             if ( loopCount == 5) {
                 [monitor invalidate];
