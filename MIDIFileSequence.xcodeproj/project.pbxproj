@@ -27,7 +27,6 @@
 		B012A107159A223D009A381D /* GDSoundEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = B012A105159A223D009A381D /* GDSoundEngine.m */; };
 		BE2868CF19081C2300D91AE4 /* fluid_gm.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */; };
 		BE2868D319081D9600D91AE4 /* howDeepIsOceanBass.mid in Resources */ = {isa = PBXBuildFile; fileRef = BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */; };
-		BE2868D519081E3900D91AE4 /* midikittest1.mid in Resources */ = {isa = PBXBuildFile; fileRef = BE2868D419081E3900D91AE4 /* midikittest1.mid */; };
 		BE3D35961911ACAB0034B094 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE3D35951911ACAB0034B094 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -71,7 +70,6 @@
 		B012A108159A2254009A381D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = fluid_gm.sf2; sourceTree = "<group>"; };
 		BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = howDeepIsOceanBass.mid; sourceTree = "<group>"; };
-		BE2868D419081E3900D91AE4 /* midikittest1.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = midikittest1.mid; sourceTree = "<group>"; };
 		BE3D35951911ACAB0034B094 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BEE9EA2A191A89F800CDEE47 /* MIDIFileSequence copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MIDIFileSequence copy-Info.plist"; path = "/Users/weinster/Documents/iosProjects/MIDIFileSequence/MIDIFileSequence copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -107,7 +105,6 @@
 			isa = PBXGroup;
 			children = (
 				BE3D35951911ACAB0034B094 /* Default-568h@2x.png */,
-				BE2868D419081E3900D91AE4 /* midikittest1.mid */,
 				BE2868D219081D9600D91AE4 /* howDeepIsOceanBass.mid */,
 				BE2868CE19081C2300D91AE4 /* fluid_gm.sf2 */,
 				B012A108159A2254009A381D /* README.md */,
@@ -262,7 +259,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE2868CF19081C2300D91AE4 /* fluid_gm.sf2 in Resources */,
-				BE2868D519081E3900D91AE4 /* midikittest1.mid in Resources */,
 				BE2868D319081D9600D91AE4 /* howDeepIsOceanBass.mid in Resources */,
 				B012A0D2159A21E9009A381D /* InfoPlist.strings in Resources */,
 				B012A0DB159A21EA009A381D /* MainStoryboard.storyboard in Resources */,

@@ -145,7 +145,7 @@ MusicTimeStamp endBeat = 0.0;
         }
     } else {
         NSLog(@"Done");
-        //[monitor invalidate];
+        [monitor invalidate];
         
     }
 
