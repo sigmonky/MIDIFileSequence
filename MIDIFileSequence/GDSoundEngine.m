@@ -276,7 +276,13 @@
     while (hasCurrentEvent)
     {
         MusicEventIteratorGetEventInfo(iterator, &eventTimeStamp, &eventType, &eventData, &eventDataSize);
-        NSLog(@"event timeStamp %f ", eventTimeStamp);
+        NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
+        if ((ceil(eventTimeStamp) - eventTimeStamp) < .0625) {
+            MusicTimeStamp newVal = ceil(eventTimeStamp);
+            MusicEventIteratorSetEventTime(iterator,newVal );
+        }
+        NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
+        
         switch (eventType) {
                 
             case kMusicEventType_ExtendedNote : {

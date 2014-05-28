@@ -19,4 +19,8 @@
 - (IBAction)resetEndLoop:(id)sender;
 - (IBAction)loadMidi:(id)sender;
 - (IBAction)stopMidi:(id)sender;
+- (IBAction)nudgeBackLoopStart:(id)sender;
+- (IBAction)nudgeBackLoopEnd:(id)sender;
+- (IBAction)nudgeForwardLoopStart:(id)sender;
+- (IBAction)nudgeForwardLoopEnd:(id)sender;
 @end

@@ -73,7 +73,7 @@ MusicTimeStamp endBeat = 0.0;
     [self.soundEngine playMIDIFile:startTime
                         playBackRate:1.0
      ];
-    monitor = [NSTimer scheduledTimerWithTimeInterval:.05
+    monitor = [NSTimer scheduledTimerWithTimeInterval:.01
                                             target:self
                                             selector:@selector(monitorPlayback)
                                             userInfo:nil
@@ -120,15 +120,35 @@ MusicTimeStamp endBeat = 0.0;
     [monitor invalidate];
 }
 
+- (IBAction)nudgeBackLoopStart:(id)sender {
+    self.startLoopSlider.value = (floor(self.startLoopSlider.value)-1.0);
+}
+
+- (IBAction)nudgeBackLoopEnd:(id)sender {
+    self.endloopSlider.value = (floor(self.endloopSlider.value)-1.0);
+}
+
+- (IBAction)nudgeForwardLoopStart:(id)sender {
+    self.startLoopSlider.value = (floor(self.startLoopSlider.value)+1.0);
+}
+
+- (IBAction)nudgeForwardLoopEnd:(id)sender {
+     self.endloopSlider.value = (floor(self.endloopSlider.value)+1.0);
+}
+
 - (void) monitorPlayback {
     
     MusicTimeStamp currentTime = [self.soundEngine getPlayTime];
     MusicTimeStamp loopStart = floor(self.startLoopSlider.value) * 4.0;
     MusicTimeStamp loopEnd = floor(self.endloopSlider.value) * 4.0;
-    if (loopStart == loopEnd) {
+    if (loopStart >= loopEnd) {
         loopEnd += 4.0;
     }
-    NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
+    
+    self.startLoopSlider.value = loopStart/4.0;
+    self.endloopSlider.value = loopEnd/4.0;
+    
+    //NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
     
     NSLog(@"%f",currentTime);
     if ( currentTime > 0) {
