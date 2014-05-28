@@ -18,4 +18,5 @@
 - (IBAction)resetStartLoop:(id)sender;
 - (IBAction)resetEndLoop:(id)sender;
 - (IBAction)loadMidi:(id)sender;
+- (IBAction)stopMidi:(id)sender;
 @end

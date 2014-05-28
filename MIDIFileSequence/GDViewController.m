@@ -69,7 +69,7 @@ MusicTimeStamp endBeat = 0.0;
 }
 
 - (IBAction)play:(UIButton *)sender {
-     MusicTimeStamp startTime = ([self.soundEngine trackLength] * startLoopSlider.value);
+     MusicTimeStamp startTime = startLoopSlider.value * 4.0;
     [self.soundEngine playMIDIFile:startTime
                         playBackRate:1.0
      ];
@@ -98,32 +98,39 @@ MusicTimeStamp endBeat = 0.0;
 }
 
 - (IBAction)resetStartLoop:(id)sender {
-    MusicTimeStamp currentBeat = [self.soundEngine trackLength] * startLoopSlider.value;
-    //[self getStartingBar:currentBeat];
-    //NSLog(@"start bar: %f ending bar %f",self.startLoopSlider.value,self.endloopSlider.value);
-    NSLog(@"start bar: %d ending bar %d",(NSUInteger)(self.startLoopSlider.value + 0.5),(NSUInteger)(self.endloopSlider.value + 0.5));    
+    
+    //MusicTimeStamp currentBeat = [self.soundEngine trackLength] * startLoopSlider.value * 4.0;
 }
 
 - (IBAction)resetEndLoop:(id)sender {
-    MusicTimeStamp currentBeat = [self.soundEngine trackLength] * endloopSlider.value;
+    //MusicTimeStamp currentBeat = [self.soundEngine trackLength] * endloopSlider.value * 4.0;
     
-    //(NSUInteger)(self.startLoopSlider.value.value + 0.5)
-    //(NSUInteger)(self.endloopSlider.value.value + 0.5)
-     NSLog(@"start bar: %d ending bar %d",(NSUInteger)(self.startLoopSlider.value + 0.5),(NSUInteger)(self.endloopSlider.value + 0.5));
 }
 
 - (IBAction)loadMidi:(id)sender {
      
     [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"];
-    self.startLoopSlider.minimumValue = 0.0f;
-    self.startLoopSlider.maximumValue = 31.0f;
-    self.endloopSlider.minimumValue = 0.0f;
-    self.endloopSlider.maximumValue = 31.0f;
+    [self setSliders];
+}
+
+- (IBAction)stopMidi:(id)sender {
+    
+    [self.soundEngine stopPlayintMIDIFile];
+    loopCount = 0;
+    [monitor invalidate];
 }
 
 - (void) monitorPlayback {
     
     MusicTimeStamp currentTime = [self.soundEngine getPlayTime];
+    MusicTimeStamp loopStart = floor(self.startLoopSlider.value) * 4.0;
+    MusicTimeStamp loopEnd = floor(self.endloopSlider.value) * 4.0;
+    if (loopStart == loopEnd) {
+        loopEnd += 4.0;
+    }
+    NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
+    
+    NSLog(@"%f",currentTime);
     if ( currentTime > 0) {
         int measure = (int) currentTime/4.0;
         int beat = (int) fmod(currentTime,4.0) + 1;
@@ -133,11 +140,11 @@ MusicTimeStamp endBeat = 0.0;
             lastBeat = beat;
         }
         //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= 12.0) {
+        if (currentTime >= loopEnd) {
             //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
-            [self.soundEngine setPlayerTime:8.0];
+            [self.soundEngine setPlayerTime:loopStart];
             loopCount++;
-            if ( loopCount == 5) {
+            if ( loopCount == 100) {
                 [monitor invalidate];
                 [self.soundEngine stopPlayintMIDIFile];
                 loopCount = 0;
@@ -148,6 +155,14 @@ MusicTimeStamp endBeat = 0.0;
         [monitor invalidate];
         
     }
+
+}
+
+- (void) setSliders {
+    self.startLoopSlider.minimumValue = 0.0f;
+    self.startLoopSlider.maximumValue = [self.soundEngine trackLength]/4.0;
+    self.endloopSlider.minimumValue = 0.0f;
+    self.endloopSlider.maximumValue = [self.soundEngine trackLength]/4.0;;
 
 }
 

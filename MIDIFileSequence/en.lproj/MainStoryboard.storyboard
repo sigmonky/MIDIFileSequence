@@ -93,6 +93,9 @@
                                 <state key="normal" title="Stop">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="stopMidi:" destination="2" eventType="touchUpInside" id="BSl-Qe-23b"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CZ6-ma-0Hh">
                                 <rect key="frame" x="0.0" y="114" width="30" height="30"/>
