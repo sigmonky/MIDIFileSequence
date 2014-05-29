@@ -151,16 +151,20 @@ MusicTimeStamp endBeat = 0.0;
     //NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
     
     NSLog(@"%f",currentTime);
-    if ( currentTime > 0) {
-        int measure = (int) currentTime/4.0;
-        int beat = (int) fmod(currentTime,4.0) + 1;
-        if ( beat != lastBeat || measure != lastMeasure ) {
-            self.TimeDisplay.text = [NSString stringWithFormat:@"%d:%d",measure,beat];
-            lastMeasure = measure;
-            lastBeat = beat;
+    if ( currentTime >= 0) {
+        
+        if ( currentTime < loopEnd){
+            int measure = (int) currentTime/4.0;
+            int beat = (int) fmod(currentTime,4.0) + 1;
+            if ( beat != lastBeat || measure != lastMeasure ) {
+                self.TimeDisplay.text = [NSString stringWithFormat:@"%d:%d",measure,beat];
+                lastMeasure = measure;
+                lastBeat = beat;
+            }
         }
         //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= loopEnd) {
+        if (currentTime >= loopEnd - .1) {
+            NSLog(@"restart...");
             //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
             [self.soundEngine setPlayerTime:loopStart];
             loopCount++;
