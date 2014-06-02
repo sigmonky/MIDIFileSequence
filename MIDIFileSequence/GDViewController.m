@@ -109,7 +109,7 @@ MusicTimeStamp endBeat = 0.0;
 
 - (IBAction)loadMidi:(id)sender {
      
-    [self.soundEngine loadMIDIFile:@"howDeepIsOceanBass"];
+    [self.soundEngine loadMIDIFile:@"How Deep Is The Ocean"];
     [self setSliders];
 }
 

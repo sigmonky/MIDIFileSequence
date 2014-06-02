@@ -18,9 +18,12 @@
 @interface GDSoundEngine()
 
 @property (readwrite) AUGraph processingGraph;
-@property (readwrite) AUNode samplerNode;
+@property (readwrite) AUNode samplerNode1,samplerNode2,samplerNode3;
+@property (readwrite) AUNode mixerNode;
 @property (readwrite) AUNode ioNode;
-@property (readwrite) AudioUnit samplerUnit;
+@property (readwrite) AudioUnit samplerUnit1,samplerUnit2,samplerUnit3;
+@property (readwrite) AudioUnit mixerUnit;
+
 @property (readwrite) AudioUnit ioUnit;
 
 @end
@@ -29,10 +32,15 @@
 
 @synthesize playing = _playing;
 @synthesize processingGraph = _processingGraph;
-@synthesize samplerNode = _samplerNode;
+@synthesize samplerNode1 = _samplerNode1;
+@synthesize samplerNode2 = _samplerNode2;
+@synthesize samplerNode3 = _samplerNode3;
+@synthesize mixerNode = _mixerNode;
 @synthesize ioNode = _ioNode;
 @synthesize ioUnit = _ioUnit;
-@synthesize samplerUnit = _samplerUnit;
+@synthesize samplerUnit1 = _samplerUnit1;
+@synthesize samplerUnit2 = _samplerUnit2;
+@synthesize samplerUnit3 = _samplerUnit3;
 @synthesize presetNumber = _presetNumber;
 
 @synthesize musicSequence = _musicSequence;
@@ -67,8 +75,42 @@
 	cd.componentManufacturer = kAudioUnitManufacturer_Apple;
 	cd.componentFlags = 0;
 	cd.componentFlagsMask = 0;
-	CheckError(AUGraphAddNode(self.processingGraph, &cd, &_samplerNode), "AUGraphAddNode");
+	CheckError(AUGraphAddNode(self.processingGraph, &cd, &_samplerNode1), "AUGraphAddNode");
+    CheckError(AUGraphAddNode(self.processingGraph, &cd, &_samplerNode2), "AUGraphAddNode");
+    CheckError(AUGraphAddNode(self.processingGraph, &cd, &_samplerNode3), "AUGraphAddNode");
     
+    
+    
+    //Mixer Unit
+    cd.componentType          = kAudioUnitType_Mixer;
+    cd.componentSubType       = kAudioUnitSubType_MultiChannelMixer;
+    
+    AUGraphAddNode (self.processingGraph, &cd, &_mixerNode);
+    
+    
+   
+     //-----------------------------------------------------------
+     // Obtain the mixer unit instance from its corresponding node
+     
+     //-----------------------------------------------------------
+     AUGraphNodeInfo (
+     self.processingGraph,
+     self.mixerNode,
+     NULL,
+     &_mixerUnit
+     );
+     
+     //--------------------------------
+     // Set the bus count for the mixer
+     //--------------------------------
+     UInt32 numBuses = 3;
+     AudioUnitSetProperty(_mixerUnit,
+     kAudioUnitProperty_ElementCount,
+     kAudioUnitScope_Input,
+     0,
+     &numBuses,
+     sizeof(numBuses));
+
     
     // I/O unit
     AudioComponentDescription iOUnitDescription;
@@ -83,19 +125,49 @@
     // now do the wiring. The graph needs to be open before you call AUGraphNodeInfo
 	CheckError(AUGraphOpen(self.processingGraph), "AUGraphOpen");
     
-	CheckError(AUGraphNodeInfo(self.processingGraph, self.samplerNode, NULL, &_samplerUnit), 
+	CheckError(AUGraphNodeInfo(self.processingGraph,
+                               self.samplerNode1,
+                               NULL,
+                               &_samplerUnit1),
                "AUGraphNodeInfo");
+    CheckError(AUGraphNodeInfo(self.processingGraph,
+                               self.samplerNode2,
+                               NULL,
+                               &_samplerUnit2),
+               "AUGraphNodeInfo");
+    CheckError(AUGraphNodeInfo(self.processingGraph,
+                               self.samplerNode3,
+                               NULL,
+                               &_samplerUnit3),
+               "AUGraphNodeInfo");
+    CheckError(AUGraphNodeInfo (
+                     self.processingGraph,
+                     self.mixerNode,
+                     NULL,
+                     &_mixerUnit),
+                    "AUGraphNodeInfo" );
     
     CheckError(AUGraphNodeInfo(self.processingGraph, self.ioNode, NULL, &_ioUnit), 
                "AUGraphNodeInfo");
     
+    //------------------
+    // Connect the nodes
+    //------------------
+    
+    AUGraphConnectNodeInput (self.processingGraph, self.samplerNode1, 0, self.mixerNode, 0);
+    AUGraphConnectNodeInput (self.processingGraph, self.samplerNode2, 0, self.mixerNode, 1);
+    AUGraphConnectNodeInput (self.processingGraph, self.samplerNode3, 0, self.mixerNode, 2);
+    
     AudioUnitElement ioUnitOutputElement = 0;
     AudioUnitElement samplerOutputElement = 0;
-    CheckError(AUGraphConnectNodeInput(self.processingGraph, 
-                                       self.samplerNode, samplerOutputElement, // srcnode, inSourceOutputNumber
+   /* CheckError(AUGraphConnectNodeInput(self.processingGraph,
+                                       self.samplerNode1, samplerOutputElement, // srcnode, inSourceOutputNumber
                                        self.ioNode, ioUnitOutputElement), // destnode, inDestInputNumber
                "AUGraphConnectNodeInput");
-    
+    */
+    // Connect the mixer unit to the output unit
+    AUGraphConnectNodeInput (self.processingGraph, self.mixerNode, 0, self.ioNode, 0);
+
     
 	NSLog (@"AUGraph is configured");
 	CAShow(self.processingGraph);
@@ -139,6 +211,26 @@
 
 - (void) setupSampler:(UInt8) pn;
 {
+    
+    
+     //-------------------------------------------------
+     // Set the AUSampler nodes to be used by each track
+     //-------------------------------------------------
+     MusicTrack track, trackTwo, trackThree;
+     MusicSequenceGetIndTrack(self.musicSequence, 0, &track);
+     MusicSequenceGetIndTrack(self.musicSequence, 1, &trackTwo);
+     MusicSequenceGetIndTrack(self.musicSequence, 2, &trackThree);
+     
+     AUNode samplerNode, samplerNodeTwo, samplerNodeThree;
+     AUGraphGetIndNode (self.processingGraph, 0, &samplerNode);
+     AUGraphGetIndNode (self.processingGraph, 1, &samplerNodeTwo);
+     AUGraphGetIndNode (self.processingGraph, 2, &samplerNodeThree);
+     
+     MusicTrackSetDestNode(track, samplerNode);
+     MusicTrackSetDestNode(trackTwo, samplerNodeTwo);
+     MusicTrackSetDestNode(trackThree, samplerNodeThree);
+   
+    
     // propagates stream formats across the connections
     Boolean outIsInitialized;
     CheckError(AUGraphIsInitialized(self.processingGraph,
@@ -159,15 +251,32 @@
     bpdata.bankURL  = (__bridge CFURLRef) bankURL;
     bpdata.bankMSB  = kAUSampler_DefaultMelodicBankMSB;
     bpdata.bankLSB  = kAUSampler_DefaultBankLSB;
-    bpdata.presetID = (UInt8) pn;
+    bpdata.presetID = (UInt8) 0;
     
     // set the kAUSamplerProperty_LoadPresetFromBank property
-    CheckError(AudioUnitSetProperty(self.samplerUnit,
+    CheckError(AudioUnitSetProperty(self.samplerUnit1,
                                     kAUSamplerProperty_LoadPresetFromBank,
                                     kAudioUnitScope_Global,
                                     0,
                                     &bpdata,
                                     sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
+    bpdata.presetID = (UInt8) 32;
+    // set the kAUSamplerProperty_LoadPresetFromBank property
+    CheckError(AudioUnitSetProperty(self.samplerUnit2,
+                                    kAUSamplerProperty_LoadPresetFromBank,
+                                    kAudioUnitScope_Global,
+                                    0,
+                                    &bpdata,
+                                    sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
+    
+    bpdata.presetID = (UInt8) 50;
+    CheckError(AudioUnitSetProperty(self.samplerUnit3,
+                                    kAUSamplerProperty_LoadPresetFromBank,
+                                    kAudioUnitScope_Global,
+                                    0,
+                                    &bpdata,
+                                    sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
+    
     
     NSLog (@"sampler ready");
 }
@@ -188,13 +297,13 @@
 {
     UInt32 noteCommand = 0x90 | 0;
     NSLog(@"playNoteOn %lu %lu cmd %lx", noteNum, velocity, noteCommand);
-	CheckError(MusicDeviceMIDIEvent(self.samplerUnit, noteCommand, noteNum, velocity, 0), "NoteOn");
+	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, velocity, 0), "NoteOn");
 }
 
 - (void)playNoteOff:(UInt32)noteNum
 {
 	UInt32 noteCommand = 0x80 | 0;
-	CheckError(MusicDeviceMIDIEvent(self.samplerUnit, noteCommand, noteNum, 0, 0), "NoteOff");
+	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, 0, 0), "NoteOff");
 }
 
  - (void)loadMIDIFile:(NSString *)midifileName
@@ -238,6 +347,7 @@
     {
         CheckError(MusicSequenceGetIndTrack (self.musicSequence, i, &track), "MusicSequenceGetIndTrack");
         
+        
         MusicTimeStamp track_length;
         UInt32 tracklength_size = sizeof(MusicTimeStamp);
         CheckError(MusicTrackGetProperty(track, kSequenceTrackProperty_TrackLength, &track_length, &tracklength_size), "kSequenceTrackProperty_TrackLength");
@@ -245,13 +355,6 @@
         
         self.trackLength = track_length;
         
-        MusicTrackLoopInfo loopInfo;
-        UInt32 lisize = sizeof(MusicTrackLoopInfo);
-        CheckError(MusicTrackGetProperty(track,kSequenceTrackProperty_LoopInfo, &loopInfo, &lisize ), "kSequenceTrackProperty_LoopInfo");
-        NSLog(@"Loop info: duration %f", loopInfo.loopDuration);
-        
-
-        //MusicTrackSetProperty(track, kSequenceTrackProperty_TrackLength, &adjTrackLength, sizeof(adjTrackLength));
         
         [self iterate:track];
     }
@@ -276,48 +379,55 @@
     while (hasCurrentEvent)
     {
         MusicEventIteratorGetEventInfo(iterator, &eventTimeStamp, &eventType, &eventData, &eventDataSize);
-        NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
+        //NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
         if ((ceil(eventTimeStamp) - eventTimeStamp) < .0625) {
             MusicTimeStamp newVal = ceil(eventTimeStamp);
             MusicEventIteratorSetEventTime(iterator,newVal );
         }
         NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
+        NSLog(@"eventType %d",(unsigned int)eventType);
+       
         
         switch (eventType) {
                 
             case kMusicEventType_ExtendedNote : {
                 ExtendedNoteOnEvent* ext_note_evt = (ExtendedNoteOnEvent*)eventData;
-                NSLog(@"extended note event, instrumentID %lu", ext_note_evt->instrumentID);
+                //NSLog(@"extended note event, instrumentID %lu", ext_note_evt->instrumentID);
 
             }
                 break ;
                 
             case kMusicEventType_ExtendedTempo : {
                 ExtendedTempoEvent* ext_tempo_evt = (ExtendedTempoEvent*)eventData;
-                NSLog(@"ExtendedTempoEvent, bpm %f", ext_tempo_evt->bpm);
+               // NSLog(@"ExtendedTempoEvent, bpm %f", ext_tempo_evt->bpm);
 
             }
                 break ;
                 
             case kMusicEventType_User : {
                 MusicEventUserData* user_evt = (MusicEventUserData*)eventData;
-                 NSLog(@"MusicEventUserData, data length %lu", user_evt->length);
+                // NSLog(@"MusicEventUserData, data length %lu", user_evt->length);
             }
                 break ;
                 
             case kMusicEventType_Meta : {
                 MIDIMetaEvent* meta_evt = (MIDIMetaEvent*)eventData;
-                NSLog(@"MIDIMetaEvent, event type %d", meta_evt->metaEventType);
+                //NSLog(@"MIDIMetaEvent, event type %d", meta_evt->metaEventType);
 
             }
                 break ;
                 
             case kMusicEventType_MIDINoteMessage : {
                 MIDINoteMessage* note_evt = (MIDINoteMessage*)eventData;
-                NSLog(@"note event channel %d", note_evt->channel);
-                NSLog(@"note event note %d", note_evt->note);
+               NSLog(@"note event channel %d", note_evt->channel);
+                
+                if (note_evt->channel != 1 ) {
+                    note_evt->velocity = 0;
+                }
+                /*NSLog(@"note event note %d", note_evt->note);
                 NSLog(@"note event duration %f", note_evt->duration); 
                 NSLog(@"note event velocity %d", note_evt->velocity);
+                */
                
             }
                 break ;
