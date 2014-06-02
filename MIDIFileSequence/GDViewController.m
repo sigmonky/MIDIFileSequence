@@ -139,8 +139,8 @@ MusicTimeStamp endBeat = 0.0;
 - (void) monitorPlayback {
     
     MusicTimeStamp currentTime = [self.soundEngine getPlayTime];
-    MusicTimeStamp loopStart = floor(self.startLoopSlider.value) * 4.0;
-    MusicTimeStamp loopEnd = floor(self.endloopSlider.value) * 4.0;
+    MusicTimeStamp loopStart = (floor(self.startLoopSlider.value) * 4.0);
+    MusicTimeStamp loopEnd = self.endloopSlider.value * 4.0; //(floor(self.endloopSlider.value) * 4.0 ) - .01;
     if (loopStart >= loopEnd) {
         loopEnd += 4.0;
     }
@@ -163,7 +163,7 @@ MusicTimeStamp endBeat = 0.0;
             }
         }
         //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= loopEnd - .1) {
+        if (currentTime >= (loopEnd - .05)) {
             NSLog(@"restart...");
             //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
             [self.soundEngine setPlayerTime:loopStart];

@@ -269,7 +269,7 @@
                                     &bpdata,
                                     sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
     
-    bpdata.presetID = (UInt8) 50;
+    bpdata.presetID = (UInt8) 115;
     CheckError(AudioUnitSetProperty(self.samplerUnit3,
                                     kAUSamplerProperty_LoadPresetFromBank,
                                     kAudioUnitScope_Global,
@@ -421,13 +421,13 @@
                 MIDINoteMessage* note_evt = (MIDINoteMessage*)eventData;
                NSLog(@"note event channel %d", note_evt->channel);
                 
-                if (note_evt->channel != 1 ) {
-                    note_evt->velocity = 0;
+               if (note_evt->channel == 9 ) {
+                   NSLog(@"note event note %d", note_evt->note);
+                    note_evt->note = 50;
                 }
-                /*NSLog(@"note event note %d", note_evt->note);
-                NSLog(@"note event duration %f", note_evt->duration); 
+                NSLog(@"note event note %d", note_evt->note);
+                NSLog(@"note event duration %f", note_evt->duration);
                 NSLog(@"note event velocity %d", note_evt->velocity);
-                */
                
             }
                 break ;
