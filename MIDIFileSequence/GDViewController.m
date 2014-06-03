@@ -109,7 +109,7 @@ MusicTimeStamp endBeat = 0.0;
 
 - (IBAction)loadMidi:(id)sender {
      
-    [self.soundEngine loadMIDIFile:@"How Deep Is The Ocean"];
+    [self.soundEngine loadMIDIFile:@"Embraceable You"];
     [self setSliders];
 }
 
@@ -150,7 +150,7 @@ MusicTimeStamp endBeat = 0.0;
     
     //NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
     
-    NSLog(@"%f",currentTime);
+    //NSLog(@"%f",currentTime);
     if ( currentTime >= 0) {
         
         if ( currentTime < loopEnd){
@@ -163,10 +163,10 @@ MusicTimeStamp endBeat = 0.0;
             }
         }
         //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= (loopEnd - .05)) {
-            NSLog(@"restart...");
+        if (currentTime >= loopEnd - .05) {
+            NSLog(@"restart...%f",loopStart - .1);
             //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
-            [self.soundEngine setPlayerTime:loopStart];
+            [self.soundEngine setPlayerTime:loopStart - .05];
             loopCount++;
             if ( loopCount == 100) {
                 [monitor invalidate];
