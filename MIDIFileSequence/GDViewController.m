@@ -136,6 +136,33 @@ MusicTimeStamp endBeat = 0.0;
      self.endloopSlider.value = (floor(self.endloopSlider.value)+1.0);
 }
 
+- (IBAction)pianoMuteToggle:(id)sender {
+    UISwitch *mySwitch = (UISwitch *)sender;
+    if ([mySwitch isOn]) {
+        [self.soundEngine muteTrack:0 mute:FALSE];
+    } else {
+        [self.soundEngine muteTrack:0 mute:TRUE];
+    }
+}
+
+- (IBAction)bassMuteToggle:(id)sender {
+    UISwitch *mySwitch = (UISwitch *)sender;
+    if ([mySwitch isOn]) {
+        [self.soundEngine muteTrack:1 mute:FALSE];
+    } else {
+        [self.soundEngine muteTrack:1 mute:TRUE];
+    }
+}
+
+- (IBAction)clickMuteToggle:(id)sender {
+    UISwitch *mySwitch = (UISwitch *)sender;
+    if ([mySwitch isOn]) {
+        [self.soundEngine muteTrack:2 mute:FALSE];
+    } else {
+        [self.soundEngine muteTrack:2 mute:TRUE];
+    }
+}
+
 - (void) monitorPlayback {
     
     MusicTimeStamp currentTime = [self.soundEngine getPlayTime];

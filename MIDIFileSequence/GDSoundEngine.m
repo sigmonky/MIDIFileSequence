@@ -347,7 +347,6 @@
     {
         CheckError(MusicSequenceGetIndTrack (self.musicSequence, i, &track), "MusicSequenceGetIndTrack");
         
-        
         MusicTimeStamp track_length;
         UInt32 tracklength_size = sizeof(MusicTimeStamp);
         CheckError(MusicTrackGetProperty(track, kSequenceTrackProperty_TrackLength, &track_length, &tracklength_size), "kSequenceTrackProperty_TrackLength");
@@ -359,6 +358,22 @@
         [self iterate:track];
     }
     
+    
+    
+    
+
+    
+}
+
+- (void) muteTrack:(NSInteger)trackNum
+              mute:(BOOL)muteSetting{
+    MusicTrack track;
+    CheckError(MusicSequenceGetIndTrack (self.musicSequence, trackNum, &track), "MusicSequenceGetIndTrack");
+    
+    BOOL muteTrack = muteSetting;
+    UInt32 muteTrackSize;
+    MusicTrackSetProperty(track, kSequenceTrackProperty_MuteStatus , &muteTrack, &muteTrackSize);
+
 }
 
 

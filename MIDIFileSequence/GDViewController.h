@@ -23,4 +23,10 @@
 - (IBAction)nudgeBackLoopEnd:(id)sender;
 - (IBAction)nudgeForwardLoopStart:(id)sender;
 - (IBAction)nudgeForwardLoopEnd:(id)sender;
+- (IBAction)pianoMuteToggle:(id)sender;
+- (IBAction)bassMuteToggle:(id)sender;
+- (IBAction)clickMuteToggle:(id)sender;
+
+
+
 @end

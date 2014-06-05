@@ -27,6 +27,7 @@
 - (void) stopPlayintMIDIFile;
 - (MusicTimeStamp)getPlayTime;
 - (void) setPlayerTime:(float)playerStartTime;
+- (void) muteTrack:(NSInteger)trackNum mute:(BOOL)muteSetting;
 
 
 @end
