@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tune.h"
 
 @interface GDLibraryTableViewController : UITableViewController
 

@@ -12,5 +12,6 @@
 
 @property (strong) NSString *title;
 @property (strong) NSString *fileName;
++ (NSMutableArray *) theTuneList;
 - (id)initWithTitle:(NSString *)title fileName:(NSString *)fileName;
 @end

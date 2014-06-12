@@ -12,23 +12,24 @@
 + (NSMutableArray *) theTuneList {
     NSMutableArray *tunes = [[NSMutableArray alloc] init];
     
-    Tune *firstTune = [[Tune alloc] initWithTitle:@"test"
-                                         fileName:@"test"];
+    Tune *firstTune = [[Tune alloc] initWithTitle:@"How Deep Is the Ocean"
+                                         fileName:@"How Deep Is The Ocean"];
     
     [tunes addObject:firstTune];
+    firstTune = [[Tune alloc] initWithTitle:@"Embraceable You"
+                                   fileName:@"Embraceable You"];
+    [tunes addObject:firstTune];
+   
     
-    Tune *getTune = [tunes objectAtIndex:0];
-    
-    NSString *title = getTune.title;
-    
-    NSLog(@"show the title:%@",title);
-    
-    return [@[firstTune] mutableCopy];
+    return tunes;
 }
 
 - (id)initWithTitle:(NSString *)title fileName:(NSString *)fileName {
-    _title = title;
-    _fileName = fileName;
+    if ((self = [super init])) {
+        _title = title;
+        _fileName = fileName;
+    }
+    return self;
 }
 
 

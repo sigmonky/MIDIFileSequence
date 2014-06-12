@@ -8,9 +8,9 @@
 
 #import "GDLibraryTableViewController.h"
 #import "Tune.h"
+#import "GDViewController.h"
 
 @interface GDLibraryTableViewController ()
-    @property (nonatomic) NSMutableArray *tunes;
 @end
 
 @implementation GDLibraryTableViewController
@@ -29,12 +29,11 @@
     [super viewDidLoad];
     
     // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    //_tunes = [Tune theTuneList];
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,7 +51,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _tunes.count;
+    return [Tune theTuneList].count;
 }
 
 
@@ -61,11 +60,27 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TuneCell"
                             forIndexPath:indexPath];
     
-    Tune *tune = _tunes[indexPath.row];
+    Tune *tune = [Tune theTuneList][indexPath.row];
     
     cell.textLabel.text = tune.title;
     
     return cell;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"GoToPlayback"]) {
+        GDViewController *player =
+        (GDViewController *)segue.destinationViewController;
+       NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        //BugSection *section = self.bugSections[indexPath.section];
+        //ScaryBug *bug = section.bugs[indexPath.row];
+        //edit.bug = bug;
+        player.currentTune = [Tune theTuneList][indexPath.row];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.tableView reloadData]; 
 }
 
 
@@ -107,15 +122,8 @@
 }
 */
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+
+
 
 @end

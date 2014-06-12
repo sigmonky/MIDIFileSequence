@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tune.h"
 
 @interface GDViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UISlider *startLoopSlider;
@@ -14,6 +15,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *TimeDisplay;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property (strong,nonatomic) Tune *currentTune;
 - (IBAction)play:(UIButton *)sender;
 - (IBAction)resetStartLoop:(id)sender;
 - (IBAction)resetEndLoop:(id)sender;

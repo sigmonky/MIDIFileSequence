@@ -30,6 +30,8 @@ MusicTimeStamp endBeat = 0.0;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    NSLog(@"current tune is ....%@",self.currentTune.title);
     self.soundEngine = [[GDSoundEngine alloc] init];
 
     UIToolbar *toolbar = [[UIToolbar alloc] init];
@@ -50,6 +52,11 @@ MusicTimeStamp endBeat = 0.0;
     
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [self.soundEngine stopPlayintMIDIFile];
+    loopCount = 0;
+    [monitor invalidate];
+}
 
 - (void)viewDidUnload
 {
@@ -108,8 +115,8 @@ MusicTimeStamp endBeat = 0.0;
 }
 
 - (IBAction)loadMidi:(id)sender {
-     
-    [self.soundEngine loadMIDIFile:@"Embraceable You"];
+    NSLog(@"loading ...%@",_currentTune.fileName);
+    [self.soundEngine loadMIDIFile:_currentTune.fileName];
     [self setSliders];
 }
 
