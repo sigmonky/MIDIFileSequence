@@ -395,13 +395,11 @@
     {
         MusicEventIteratorGetEventInfo(iterator, &eventTimeStamp, &eventType, &eventData, &eventDataSize);
         //NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
-        if ((ceil(eventTimeStamp) - eventTimeStamp) < .0625) {
+        /*if ((ceil(eventTimeStamp) - eventTimeStamp) < .0625) {
             MusicTimeStamp newVal = ceil(eventTimeStamp);
             MusicEventIteratorSetEventTime(iterator,newVal );
-        }
-        NSLog(@"event timeStamp %f ", ceil(eventTimeStamp));
-        NSLog(@"eventType %d",(unsigned int)eventType);
-       
+        }*/
+        NSLog(@"event timeStamp %f ", eventTimeStamp);
         
         switch (eventType) {
                 
@@ -440,6 +438,7 @@
                    NSLog(@"note event note %d", note_evt->note);
                     note_evt->note = 50;
                 }
+                
                 NSLog(@"note event note %d", note_evt->note);
                 NSLog(@"note event duration %f", note_evt->duration);
                 NSLog(@"note event velocity %d", note_evt->velocity);
@@ -449,9 +448,9 @@
                 
             case kMusicEventType_MIDIChannelMessage : {
                 MIDIChannelMessage* channel_evt = (MIDIChannelMessage*)eventData;
-                NSLog(@"channel event status %X", channel_evt->status);
-                NSLog(@"channel event d1 %X", channel_evt->data1);
-                NSLog(@"channel event d2 %X", channel_evt->data2);
+                //NSLog(@"channel event status %X", channel_evt->status);
+                //NSLog(@"channel event d1 %X", channel_evt->data1);
+                //NSLog(@"channel event d2 %X", channel_evt->data2);
                 
                 if(channel_evt->status == (0xC0 & 0xF0)) {
                     [self setPresetNumber:channel_evt->data1];
@@ -461,14 +460,14 @@
                 
             case kMusicEventType_MIDIRawData : {
                 MIDIRawData* raw_data_evt = (MIDIRawData*)eventData;
-                NSLog(@"MIDIRawData, length %lu", raw_data_evt->length);
+                //NSLog(@"MIDIRawData, length %lu", raw_data_evt->length);
 
             }
                 break ;
                 
             case kMusicEventType_Parameter : {
                 ParameterEvent* parameter_evt = (ParameterEvent*)eventData;
-                NSLog(@"ParameterEvent, parameterid %lu", parameter_evt->parameterID);
+               // NSLog(@"ParameterEvent, parameterid %lu", parameter_evt->parameterID);
 
             }
                 break ;

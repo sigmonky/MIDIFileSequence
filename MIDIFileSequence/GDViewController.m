@@ -33,22 +33,6 @@ MusicTimeStamp endBeat = 0.0;
     
     NSLog(@"current tune is ....%@",self.currentTune.title);
     self.soundEngine = [[GDSoundEngine alloc] init];
-
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
-    toolbar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 44);
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:self action:@selector(btnItem1Pressed:)];
-    
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-    
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Item" style:UIBarButtonItemStyleBordered target:self action:@selector(btnItem2Pressed:)];
-    
-     [toolbar setItems:[[NSArray alloc] initWithObjects:leftButton,flex,rightButton, nil]];
-    
-    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin| UIViewAutoresizingFlexibleRightMargin ;
-    
-    [self.view addSubview:toolbar];
-    
-    
     
 }
 
@@ -197,10 +181,8 @@ MusicTimeStamp endBeat = 0.0;
             }
         }
         //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= loopEnd - .05) {
-            NSLog(@"restart...%f",loopStart - .1);
-            //[self.soundEngine setPlayerTime:([self.soundEngine trackLength] * startLoopSlider.value)];
-            [self.soundEngine setPlayerTime:loopStart - .05];
+        if (currentTime >= loopEnd - .1) {
+            [self.soundEngine setPlayerTime:loopStart - 0.5];
             loopCount++;
             if ( loopCount == 100) {
                 [monitor invalidate];
