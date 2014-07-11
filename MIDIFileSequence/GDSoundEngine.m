@@ -306,6 +306,85 @@
 	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, 0, 0), "NoteOff");
 }
 
+
+
+
+void MyMIDINotifyProc (const MIDINotification  *message, void *refCon) {
+    printf("MIDI Notify, messageId=%d,", message->messageID);
+}
+
+
+
+static void MyMIDIReadProc(const MIDIPacketList *pktlist,
+                           void *refCon,
+                           void *connRefCon) {
+    
+    
+    AudioUnit *player = (AudioUnit*) refCon;
+    
+    MIDIPacket *packet = (MIDIPacket *)pktlist->packet;
+    for (int i=0; i < pktlist->numPackets; i++) {
+        Byte midiStatus = packet->data[0];
+        Byte midiCommand = midiStatus >> 4;
+        
+        
+        if (midiCommand == 0x09) {
+            Byte note = packet->data[1] & 0x7F;
+            Byte velocity = packet->data[2] & 0x7F;
+            
+            int noteNumber = ((int) note) % 12;
+            NSString *noteType;
+            switch (noteNumber) {
+                case 0:
+                    noteType = @"C";
+                    break;
+                case 1:
+                    noteType = @"C#";
+                    break;
+                case 2:
+                    noteType = @"D";
+                    break;
+                case 3:
+                    noteType = @"D#";
+                    break;
+                case 4:
+                    noteType = @"E";
+                    break;
+                case 5:
+                    noteType = @"F";
+                    break;
+                case 6:
+                    noteType = @"F#";
+                    break;
+                case 7:
+                    noteType = @"G";
+                    break;
+                case 8:
+                    noteType = @"G#";
+                    break;
+                case 9:
+                    noteType = @"A";
+                    break;
+                case 10:
+                    noteType = @"Bb";
+                    break;
+                case 11:
+                    noteType = @"B";
+                    break;
+                default:
+                    break;
+            }
+            NSLog([noteType stringByAppendingFormat:[NSString stringWithFormat:@": %i", noteNumber]]);
+            
+            
+            OSStatus result = noErr;
+            result = MusicDeviceMIDIEvent (player, midiStatus, note, velocity, 0);
+        }
+        packet = MIDIPacketNext(packet);
+    }
+}
+
+
  - (void)loadMIDIFile:(NSString *)midifileName
 {
     
@@ -328,11 +407,23 @@
     CheckError(MusicSequenceFileLoad(self.musicSequence,
                                      (__bridge CFURLRef) midiFileURL,
                                      0, // can be zero in many cases
-                                     kMusicSequenceLoadSMF_ChannelsToTracks), "MusicSequenceFileLoad");	
+                                     kMusicSequenceLoadSMF_ChannelsToTracks), "MusicSequenceFileLoad");
     
-    //  MIDIEndpointRef aPlayerDestEndpoint;    
-    //  aPlayerDestEndpoint = MIDIGetDestination(0);
-    //  CheckError(MusicSequenceSetMIDIEndpoint(self.musicSequence, aPlayerDestEndpoint), "MusicSequenceSetMIDIEndpoint");
+    // Create a client
+    OSStatus result = noErr;
+    MIDIClientRef virtualMidi;
+    result = MIDIClientCreate(CFSTR("Virtual Client"),
+                              MyMIDINotifyProc,
+                              NULL,
+                              &virtualMidi);
+    
+    // Create an endpoint
+    MIDIEndpointRef virtualEndpoint;
+    result = MIDIDestinationCreate(virtualMidi, CFSTR("Virtual Destination"), MyMIDIReadProc, self.samplerUnit2, &virtualEndpoint);
+    
+    NSAssert( result == noErr, @"MIDIDestinationCreate failed. Error code: %d '%.4s'", (int) result, (const char *)&result);
+    
+     MusicSequenceSetMIDIEndpoint(self.musicSequence, virtualEndpoint);
     
     CheckError(MusicSequenceSetAUGraph(self.musicSequence, self.processingGraph),
                "MusicSequenceSetAUGraph");
@@ -399,7 +490,7 @@
             MusicTimeStamp newVal = ceil(eventTimeStamp);
             MusicEventIteratorSetEventTime(iterator,newVal );
         }*/
-        NSLog(@"event timeStamp %f ", eventTimeStamp);
+        
         
         switch (eventType) {
                 
@@ -432,16 +523,20 @@
                 
             case kMusicEventType_MIDINoteMessage : {
                 MIDINoteMessage* note_evt = (MIDINoteMessage*)eventData;
-               NSLog(@"note event channel %d", note_evt->channel);
+               
                 
                if (note_evt->channel == 9 ) {
-                   NSLog(@"note event note %d", note_evt->note);
                     note_evt->note = 50;
                 }
                 
-                NSLog(@"note event note %d", note_evt->note);
-                NSLog(@"note event duration %f", note_evt->duration);
-                NSLog(@"note event velocity %d", note_evt->velocity);
+                if (note_evt->channel == 0 ) {
+                    NSLog(@"note event channel %d", note_evt->channel);
+                    NSLog(@"event timeStamp %f ", eventTimeStamp);
+                    NSLog(@"note event note %d", note_evt->note);
+                    NSLog(@"note event duration %f", note_evt->duration);
+                    NSLog(@"note event velocity %d", note_evt->velocity);
+                    NSLog(@"-----------------------------");
+                }
                
             }
                 break ;
