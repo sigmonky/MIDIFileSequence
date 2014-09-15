@@ -447,6 +447,31 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
         
         
         [self iterate:track];
+        
+    }
+    
+    
+    /*
+     OSStatus MusicSequenceNewTrack (
+     MusicSequence  inSequence,
+     MusicTrack     *outTrack
+     );
+     
+     
+    */
+    
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&track),"MusicSequenceNewTrack");
+    //hack to experiment with dynamic sequence generation
+    CheckError(MusicSequenceGetIndTrack (self.musicSequence, 3, &track), "MusicSequenceGetIndTrack");
+    
+    
+    for ( int x =0; x < 100; x++) {
+        MIDINoteMessage message;
+        message.duration = .5;
+        message.note = 60 + x%10;
+        message.velocity = 100;
+        message.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, x + .5, &message);
     }
     
     
