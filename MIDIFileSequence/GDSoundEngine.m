@@ -404,10 +404,11 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     CheckError(MusicPlayerSetSequence(self.musicPlayer, self.musicSequence), "MusicPlayerSetSequence");
     
     
-    CheckError(MusicSequenceFileLoad(self.musicSequence,
+    /*CheckError(MusicSequenceFileLoad(self.musicSequence,
                                      (__bridge CFURLRef) midiFileURL,
                                      0, // can be zero in many cases
                                      kMusicSequenceLoadSMF_ChannelsToTracks), "MusicSequenceFileLoad");
+     */
     
     // Create a client
     OSStatus result = noErr;
@@ -446,7 +447,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
         self.trackLength = track_length;
         
         
-        [self iterate:track];
+        //[self iterate:track];
         
     }
     
@@ -462,17 +463,64 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     CheckError(MusicSequenceNewTrack(self.musicSequence,&track),"MusicSequenceNewTrack");
     //hack to experiment with dynamic sequence generation
-    CheckError(MusicSequenceGetIndTrack (self.musicSequence, 3, &track), "MusicSequenceGetIndTrack");
+    //CheckError(MusicSequenceGetIndTrack (self.musicSequence, 3, &track), "MusicSequenceGetIndTrack");
     
     
-    for ( int x =0; x < 100; x++) {
-        MIDINoteMessage message;
-        message.duration = .5;
-        message.note = 60 + x%10;
-        message.velocity = 100;
-        message.channel = 0;
-        MusicTrackNewMIDINoteEvent(track, x + .5, &message);
-    }
+    //for ( int x =0; x < 100; x++) {
+        MIDINoteMessage voice1,voice2,voice3;
+        voice1.duration = 3.0;
+        voice1.note = 60;
+        voice1.velocity = 100;
+        voice1.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, 0, &voice1);
+    
+        voice2.duration = 3.0;
+        voice2.note = 64;
+        voice2.velocity = 100;
+        voice2.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, 0, &voice2);
+    
+        voice3.duration = 3.0;
+        voice3.note = 67;
+        voice3.velocity = 100;
+        voice3.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, 0, &voice3);
+    
+        MusicTrackNewMIDINoteEvent(track, 4, &voice1);
+    
+        voice2.duration = 3.0;
+        voice2.note = 65;
+        voice2.velocity = 100;
+        voice2.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, 4, &voice2);
+    
+        voice3.duration = 3.0;
+        voice3.note = 69;
+        voice3.velocity = 100;
+        voice3.channel = 0;
+        MusicTrackNewMIDINoteEvent(track, 4, &voice3);
+    
+    voice1.duration = 3.0;
+    voice1.note = 62;
+    voice1.velocity = 100;
+    voice1.channel = 0;
+    MusicTrackNewMIDINoteEvent(track, 8, &voice1);
+    
+    voice2.duration = 3.0;
+    voice2.note = 67;
+    voice2.velocity = 100;
+    voice2.channel = 0;
+    MusicTrackNewMIDINoteEvent(track, 8, &voice2);
+    
+    voice3.duration = 3.0;
+    voice3.note = 71;
+    voice3.velocity = 100;
+    voice3.channel = 0;
+    MusicTrackNewMIDINoteEvent(track, 8, &voice3);
+
+    //}
+    
+    [self setPresetNumber:1];
     
     
     
