@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 Rockhopper Technologies. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface MIDIFileSequenceTests : SenTestCase
+@interface MIDIFileSequenceTests : XCTestCase
 
 @end

@@ -19,7 +19,6 @@
 @synthesize startLoopSlider;
 @synthesize endloopSlider;
 
-NSTimer *monitor;
 int lastMeasure = 0;
 int lastBeat = 0;
 int loopCount = 0;
@@ -39,7 +38,6 @@ MusicTimeStamp endBeat = 0.0;
 - (void) viewWillDisappear:(BOOL)animated {
     [self.soundEngine stopPlayintMIDIFile];
     loopCount = 0;
-    [monitor invalidate];
 }
 
 - (void)viewDidUnload
@@ -64,39 +62,9 @@ MusicTimeStamp endBeat = 0.0;
     [self.soundEngine playMIDIFile:startTime
                         playBackRate:1.0
      ];
-    monitor = [NSTimer scheduledTimerWithTimeInterval:.01
-                                            target:self
-                                            selector:@selector(monitorPlayback)
-                                            userInfo:nil
-                                            repeats:YES];
     
 }
 
-- (MusicTimeStamp) getStartingBar:(MusicTimeStamp)rawMidiTime {
-    
-    startBeat = floor(rawMidiTime/4.0);
-    NSLog(@"the beat is %f -- start bar is %f",rawMidiTime,startBeat);
-    
-    return rawMidiTime;
-}
-
-- (MusicTimeStamp) getEndingBar:(MusicTimeStamp)rawMidiTime {
-    
-    endBeat = floor(rawMidiTime/4.0) + 1.0;
-    NSLog(@"the beat is %f -- end bar is %f",rawMidiTime,endBeat);
-    
-    return rawMidiTime;
-}
-
-- (IBAction)resetStartLoop:(id)sender {
-    
-    //MusicTimeStamp currentBeat = [self.soundEngine trackLength] * startLoopSlider.value * 4.0;
-}
-
-- (IBAction)resetEndLoop:(id)sender {
-    //MusicTimeStamp currentBeat = [self.soundEngine trackLength] * endloopSlider.value * 4.0;
-    
-}
 
 - (IBAction)loadMidi:(id)sender {
     NSLog(@"loading ...%@",_currentTune.fileName);
@@ -105,10 +73,8 @@ MusicTimeStamp endBeat = 0.0;
 }
 
 - (IBAction)stopMidi:(id)sender {
-    
     [self.soundEngine stopPlayintMIDIFile];
     loopCount = 0;
-    [monitor invalidate];
 }
 
 - (IBAction)nudgeBackLoopStart:(id)sender {
@@ -154,49 +120,6 @@ MusicTimeStamp endBeat = 0.0;
     }
 }
 
-- (void) monitorPlayback {
-    
-    MusicTimeStamp currentTime = [self.soundEngine getPlayTime];
-    MusicTimeStamp loopStart = (floor(self.startLoopSlider.value) * 4.0);
-    MusicTimeStamp loopEnd = self.endloopSlider.value * 4.0; //(floor(self.endloopSlider.value) * 4.0 ) - .01;
-    if (loopStart >= loopEnd) {
-        loopEnd += 4.0;
-    }
-    
-    self.startLoopSlider.value = loopStart/4.0;
-    self.endloopSlider.value = loopEnd/4.0;
-    
-    //NSLog(@"%f -- %f to %f -- %f to %f",currentTime,loopStart,loopEnd,self.startLoopSlider.value,self.endloopSlider.value);
-    
-    //NSLog(@"%f",currentTime);
-    if ( currentTime >= 0) {
-        
-        if ( currentTime < loopEnd){
-            int measure = (int) currentTime/4.0;
-            int beat = (int) fmod(currentTime,4.0) + 1;
-            if ( beat != lastBeat || measure != lastMeasure ) {
-                self.TimeDisplay.text = [NSString stringWithFormat:@"%d:%d",measure,beat];
-                lastMeasure = measure;
-                lastBeat = beat;
-            }
-        }
-        //if (currentTime > ([self.soundEngine trackLength] * endloopSlider.value)) {
-        if (currentTime >= loopEnd - .1) {
-            [self.soundEngine setPlayerTime:loopStart - 0.5];
-            loopCount++;
-            if ( loopCount == 100) {
-                [monitor invalidate];
-                [self.soundEngine stopPlayintMIDIFile];
-                loopCount = 0;
-            }
-        }
-    } else {
-        NSLog(@"Done");
-        [monitor invalidate];
-        
-    }
-
-}
 
 - (void) setSliders {
     self.startLoopSlider.minimumValue = 0.0f;
