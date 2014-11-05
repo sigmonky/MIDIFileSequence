@@ -461,7 +461,27 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
     
-    MIDINoteMessage voice1,voice2,voice3;
+    
+    NSArray *keyBoard = @[@[@0,@[@60,@64,@67],@3],@[@4,@[@60,@65,@69],@3],@[@8,@[@59,@62,@67],@3]];
+     
+     for ( int16_t chordNumber = 0; chordNumber < keyBoard.count; chordNumber++) {
+         NSArray *currentChord = keyBoard[chordNumber];
+         int8_t beat =  [currentChord[0] integerValue];
+         int8_t duration = [currentChord[2] integerValue];
+         NSArray *notesInChord = currentChord[1];
+         for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
+             MIDINoteMessage voice;
+             voice.duration = duration;
+             voice.note = [notesInChord[noteNumber] integerValue];
+             voice.velocity = 100;
+             voice.channel = 1;
+             MusicTrackNewMIDINoteEvent(track1, beat, &voice);
+         }
+     }
+
+    
+    
+    /*MIDINoteMessage voice1,voice2,voice3;
     voice1.duration = 3.0;
     voice1.note = 60;
     voice1.velocity = 100;
@@ -532,7 +552,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     voice1.velocity = 100;
     voice1.channel = 1;
     MusicTrackNewMIDINoteEvent(track2, 8, &voice1);
-
+     */
 
     
     [self setupSampler];
