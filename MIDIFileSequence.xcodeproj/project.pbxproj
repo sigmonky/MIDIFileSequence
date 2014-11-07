@@ -58,7 +58,7 @@
 		B012A0DA159A21EA009A381D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		B012A0DC159A21EA009A381D /* GDViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GDViewController.h; sourceTree = "<group>"; };
 		B012A0DD159A21EA009A381D /* GDViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GDViewController.m; sourceTree = "<group>"; };
-		B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MIDIFileSequenceTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MIDIFileSequenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B012A0ED159A21EA009A381D /* MIDIFileSequenceTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MIDIFileSequenceTests-Info.plist"; sourceTree = "<group>"; };
 		B012A0EF159A21EB009A381D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B012A0F1159A21EB009A381D /* MIDIFileSequenceTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MIDIFileSequenceTests.h; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				B012A0C3159A21E8009A381D /* MIDIFileSequence.app */,
-				B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.octest */,
+				B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,10 +152,7 @@
 		B012A0CD159A21E9009A381D /* MIDIFileSequence */ = {
 			isa = PBXGroup;
 			children = (
-				B012A102159A223D009A381D /* GDCoreAudioUtils.c */,
-				B012A103159A223D009A381D /* GDCoreAudioUtils.h */,
-				B012A104159A223D009A381D /* GDSoundEngine.h */,
-				B012A105159A223D009A381D /* GDSoundEngine.m */,
+				BE17330C1A0BD03B00E5FEF4 /* Sound Engine */,
 				B012A0D6159A21E9009A381D /* GDAppDelegate.h */,
 				B012A0D7159A21E9009A381D /* GDAppDelegate.m */,
 				B012A0D9159A21EA009A381D /* MainStoryboard.storyboard */,
@@ -209,6 +206,17 @@
 			name = tunes;
 			sourceTree = "<group>";
 		};
+		BE17330C1A0BD03B00E5FEF4 /* Sound Engine */ = {
+			isa = PBXGroup;
+			children = (
+				B012A102159A223D009A381D /* GDCoreAudioUtils.c */,
+				B012A103159A223D009A381D /* GDCoreAudioUtils.h */,
+				B012A104159A223D009A381D /* GDSoundEngine.h */,
+				B012A105159A223D009A381D /* GDSoundEngine.m */,
+			);
+			name = "Sound Engine";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -245,7 +253,7 @@
 			);
 			name = MIDIFileSequenceTests;
 			productName = MIDIFileSequenceTests;
-			productReference = B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.octest */;
+			productReference = B012A0E4159A21EA009A381D /* MIDIFileSequenceTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */

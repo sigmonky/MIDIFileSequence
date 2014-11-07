@@ -66,14 +66,14 @@ MusicTimeStamp endBeat = 0.0;
 }
 
 
-- (IBAction)loadMidi:(id)sender {
+- (IBAction)generateMidi:(id)sender {
     NSLog(@"loading ...%@",_currentTune.fileName);
-    [self.soundEngine loadMIDIFile:_currentTune.fileName];
+    [self.soundEngine generateMIDIFile:_currentTune.fileName];
     [self setSliders];
 }
 
 - (IBAction)stopMidi:(id)sender {
-    [self.soundEngine stopPlayintMIDIFile];
+    [self.soundEngine cleanup];
     loopCount = 0;
 }
 

@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (strong,nonatomic) Tune *currentTune;
 - (IBAction)play:(UIButton *)sender;
-- (IBAction)loadMidi:(id)sender;
+- (IBAction)generateMidi:(id)sender;
 - (IBAction)stopMidi:(id)sender;
 - (IBAction)nudgeBackLoopStart:(id)sender;
 - (IBAction)nudgeBackLoopEnd:(id)sender;

@@ -34,8 +34,7 @@
 - (id) init 
 {
     if ( self = [super init] ) {
-        [self createAUGraph];
-        [self startGraph];
+        
         
     }
     
@@ -53,7 +52,7 @@
 			   "NewAUGraph"
                );
     
-    //Step 2: re-usable audio component description struct
+    //Step 2: initialize re-usable audio component description struct
     AudioComponentDescription cd = {};
     
     //Step 3: create the sampler nodes
@@ -258,10 +257,15 @@
     
     NSLog (@"Stopping audio processing graph");
     Boolean isRunning = false;
-    CheckError(AUGraphIsRunning (self.processingGraph, &isRunning), "AUGraphIsRunning");
+    CheckError(
+               AUGraphIsRunning (self.processingGraph, &isRunning),
+               "AUGraphIsRunning"
+               );
     
     if (isRunning) {
-        CheckError(AUGraphStop(self.processingGraph), "AUGraphStop");
+        CheckError(AUGraphStop(self.processingGraph),
+                   "AUGraphStop"
+                   );
         self.playing = NO;
     }
 }
@@ -270,75 +274,76 @@
 
 - (void) setupSampler
 {
-    
-    
-     //-------------------------------------------------
-     // Set the AUSampler nodes to be used by each track
-     //-------------------------------------------------
-    
+    // get references to music tracks in sequence
      MusicTrack trackOne, trackTwo, trackThree;
      MusicSequenceGetIndTrack(self.musicSequence, 0, &trackOne);
      MusicSequenceGetIndTrack(self.musicSequence, 1, &trackTwo);
      MusicSequenceGetIndTrack(self.musicSequence, 2, &trackThree);
      
+    // get references to sampler nodes in audio graph
      AUNode samplerNodeOne, samplerNodeTwo, samplerNodeThree;
      AUGraphGetIndNode (self.processingGraph, 0, &samplerNodeOne);
      AUGraphGetIndNode (self.processingGraph, 1, &samplerNodeTwo);
      AUGraphGetIndNode (self.processingGraph, 2, &samplerNodeThree);
-     
+    
+    // assign music tracks in sequence to target sampler nodes in audio graph
      MusicTrackSetDestNode(trackOne,   samplerNodeOne);
      MusicTrackSetDestNode(trackTwo,   samplerNodeTwo);
      MusicTrackSetDestNode(trackThree, samplerNodeThree);
    
     
-    // propagates stream formats across the connections
+    // initiaize the audio graph
     Boolean outIsInitialized;
     CheckError(AUGraphIsInitialized(self.processingGraph,
-                                    &outIsInitialized), "AUGraphIsInitialized");
+                                    &outIsInitialized),
+               "AUGraphIsInitialized"
+               );
     if(!outIsInitialized) {
         return;
     }
     
-    
+    // load the sample bank -- in this case, a sound font
     NSURL *bankURL;
     bankURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] 
                                                   pathForResource:@"fluid_gm" ofType:@"sf2"]];
     
-    // fill out a bank preset data structure
+    // fill out persistent property values for bank preset data structure
     AUSamplerBankPresetData bpdata;
     bpdata.bankURL  = (__bridge CFURLRef) bankURL;
     bpdata.bankMSB  = kAUSampler_DefaultMelodicBankMSB;
     bpdata.bankLSB  = kAUSampler_DefaultBankLSB;
-    bpdata.presetID = (UInt8) 0;
     
     
-    bpdata.presetID = (UInt8) 0;
-    // set the kAUSamplerProperty_LoadPresetFromBank property
+    /*
+     1) identify a preset or "MIDI instrument" or sample in the soundbank resource
+     2) load a preset from the soundbank into the indicated sampler Audio Unit
+    */
+    bpdata.presetID = (UInt8) 0; //piano midi instrument/sample
     CheckError(AudioUnitSetProperty(self.samplerUnit1,
                                     kAUSamplerProperty_LoadPresetFromBank,
                                     kAudioUnitScope_Global,
                                     0,
                                     &bpdata,
-                                    sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
-    bpdata.presetID = (UInt8) 32;
-    // set the kAUSamplerProperty_LoadPresetFromBank property
+                                    sizeof(bpdata)),
+               "kAUSamplerProperty_LoadPresetFromBank");
+    
+    bpdata.presetID = (UInt8) 32; //upright midi instrument/bass sample
     CheckError(AudioUnitSetProperty(self.samplerUnit2,
                                     kAUSamplerProperty_LoadPresetFromBank,
                                     kAudioUnitScope_Global,
                                     0,
                                     &bpdata,
-                                    sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
+                                    sizeof(bpdata)),
+               "kAUSamplerProperty_LoadPresetFromBank");
     
-    bpdata.presetID = (UInt8) 115;
+    bpdata.presetID = (UInt8) 115; //woodblock midi instrument/sample
     CheckError(AudioUnitSetProperty(self.samplerUnit3,
                                     kAUSamplerProperty_LoadPresetFromBank,
                                     kAudioUnitScope_Global,
                                     0,
                                     &bpdata,
-                                    sizeof(bpdata)), "kAUSamplerProperty_LoadPresetFromBank");
-    
-    
-    NSLog (@"sampler ready");
+                                    sizeof(bpdata)),
+               "kAUSamplerProperty_LoadPresetFromBank");
 }
 
 
@@ -348,13 +353,17 @@
 {
     UInt32 noteCommand = 0x90 | 0;
     NSLog(@"playNoteOn %u %u cmd %x", (unsigned int)noteNum, (unsigned int)velocity, (unsigned int)noteCommand);
-	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, velocity, 0), "NoteOn");
+	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, velocity, 0),
+               "NoteOn"
+               );
 }
 
 - (void)playNoteOff:(UInt32)noteNum
 {
 	UInt32 noteCommand = 0x80 | 0;
-	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, 0, 0), "NoteOff");
+	CheckError(MusicDeviceMIDIEvent(self.samplerUnit1, noteCommand, noteNum, 0, 0),
+               "NoteOff"
+               );
 }
 
 
@@ -432,37 +441,52 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
 }
 
 
-
-
-
-
-
- - (void)loadMIDIFile:(NSString *)midifileName
-{
+- (void) setUpPlayerAndSequence {
+    CheckError(NewMusicPlayer(&_musicPlayer),
+               "NewMusicPlayer"
+               );
     
-    CheckError(NewMusicPlayer(&_musicPlayer), "NewMusicPlayer");
+    CheckError(NewMusicSequence(&_musicSequence),
+               "NewMusicSequence"
+               );
     
-    CheckError(NewMusicSequence(&_musicSequence), "NewMusicSequence");
-    
-    CheckError(MusicPlayerSetSequence(self.musicPlayer, self.musicSequence), "MusicPlayerSetSequence");
+    CheckError(MusicPlayerSetSequence(self.musicPlayer, self.musicSequence),
+               "MusicPlayerSetSequence"
+               );
     
     CheckError(MusicSequenceSetAUGraph(self.musicSequence, self.processingGraph),
-               "MusicSequenceSetAUGraph");
-     
+               "MusicSequenceSetAUGraph"
+               );
+    
     CAShow(self.musicSequence);
+
+}
+
+
+
+
+ - (void)generateMIDIFile:(NSString *)midifileName
+{
+    
+    
+    [self createAUGraph];
+    [self startGraph];
+    [self setUpPlayerAndSequence];
     
     MusicTrack track1,track2;
     
     CheckError(MusicSequenceNewTrack(self.musicSequence,&track1),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
     
     MusicTrackLoopInfo loopSetting = {};
     loopSetting.loopDuration = 12;
     loopSetting.numberOfLoops = 0;
     
     MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
     
     
-    NSArray *keyBoard = @[@[@0,@[@60,@64,@67],@3],@[@4,@[@60,@65,@69],@3],@[@8,@[@59,@62,@67],@3]];
+    NSArray *keyBoard = @[@[@0,@[@60,@64,@67],@3.9],@[@4,@[@60,@65,@69],@3.9],@[@8,@[@59,@62,@67],@3.9]];
      
      for ( int16_t chordNumber = 0; chordNumber < keyBoard.count; chordNumber++) {
          NSArray *currentChord = keyBoard[chordNumber];
@@ -478,86 +502,33 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
              MusicTrackNewMIDINoteEvent(track1, beat, &voice);
          }
      }
+    
+    NSArray *bass = @[@[@0,@[@36],@3.9],@[@4,@[@41],@3.9],@[@8,@[@43],@3.9]];
+    
+    for ( int16_t chordNumber = 0; chordNumber < bass.count; chordNumber++) {
+        NSArray *currentChord = bass[chordNumber];
+        int8_t beat =  [currentChord[0] integerValue];
+        int8_t duration = [currentChord[2] integerValue];
+        NSArray *notesInChord = currentChord[1];
+        for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
+            MIDINoteMessage voice;
+            voice.duration = duration;
+            voice.note = [notesInChord[noteNumber] integerValue];
+            voice.velocity = 100;
+            voice.channel = 1;
+            MusicTrackNewMIDINoteEvent(track2, beat, &voice);
+        }
+    }
+
+
 
     
-    
-    /*MIDINoteMessage voice1,voice2,voice3;
-    voice1.duration = 3.0;
-    voice1.note = 60;
-    voice1.velocity = 100;
-    voice1.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 0, &voice1);
-
-    voice2.duration = 3.0;
-    voice2.note = 64;
-    voice2.velocity = 100;
-    voice2.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 0, &voice2);
-
-    voice3.duration = 3.0;
-    voice3.note = 67;
-    voice3.velocity = 100;
-    voice3.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 0, &voice3);
-
-    MusicTrackNewMIDINoteEvent(track1, 4, &voice1);
-
-    voice2.duration = 3.0;
-    voice2.note = 65;
-    voice2.velocity = 100;
-    voice2.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 4, &voice2);
-
-    voice3.duration = 3.0;
-    voice3.note = 69;
-    voice3.velocity = 100;
-    voice3.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 4, &voice3);
-    
-    voice1.duration = 3.0;
-    voice1.note = 62;
-    voice1.velocity = 100;
-    voice1.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 8, &voice1);
-    
-    voice2.duration = 3.0;
-    voice2.note = 67;
-    voice2.velocity = 100;
-    voice2.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 8, &voice2);
-    
-    voice3.duration = 3.0;
-    voice3.note = 71;
-    voice3.velocity = 100;
-    voice3.channel = 1;
-    MusicTrackNewMIDINoteEvent(track1, 8, &voice3);
-    
-    
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
-    MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
-    voice1.duration = 3.0;
-    voice1.note = 36;
-    voice1.velocity = 100;
-    voice1.channel = 1;
-    MusicTrackNewMIDINoteEvent(track2, 0, &voice1);
-    
-    voice1.duration = 3.0;
-    voice1.note = 41;
-    voice1.velocity = 100;
-    voice1.channel = 1;
-    MusicTrackNewMIDINoteEvent(track2, 4, &voice1);
-
-    voice1.duration = 3.0;
-    voice1.note = 43;
-    voice1.velocity = 100;
-    voice1.channel = 1;
-    MusicTrackNewMIDINoteEvent(track2, 8, &voice1);
-     */
 
     
     [self setupSampler];
     
     OSStatus result = noErr;
+    
     // Create a client
     MIDIClientRef virtualMidi;
     result = MIDIClientCreate(CFSTR("Virtual Client"),
@@ -586,11 +557,17 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
 - (void) muteTrack:(NSInteger)trackNum
               mute:(BOOL)muteSetting{
     MusicTrack track;
-    CheckError(MusicSequenceGetIndTrack (self.musicSequence, trackNum, &track), "MusicSequenceGetIndTrack");
+    CheckError(MusicSequenceGetIndTrack (self.musicSequence, trackNum, &track),
+               "MusicSequenceGetIndTrack"
+               );
     
     BOOL muteTrack = muteSetting;
     UInt32 muteTrackSize = 0;
-    MusicTrackSetProperty(track, kSequenceTrackProperty_MuteStatus , &muteTrack, muteTrackSize);
+    MusicTrackSetProperty(track,
+                          kSequenceTrackProperty_MuteStatus ,
+                          &muteTrack,
+                          muteTrackSize
+                          );
 
 }
 
@@ -599,40 +576,44 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
 {
     NSLog(@"starting music player");
     [self stopPlayintMIDIFile];
-    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)0),"MusicPlayerSetTime");
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)0),
+               "MusicPlayerSetTime"
+               );
     
     CheckError(MusicPlayerSetPlayRateScalar(self.musicPlayer,playBackRate),
-               "MusicPlayerSetPlayRateScalar");
+               "MusicPlayerSetPlayRateScalar"
+               );
     
     
-    CheckError(MusicPlayerPreroll(self.musicPlayer), "MusicPlayerPreroll");
+    CheckError(MusicPlayerPreroll(self.musicPlayer),
+               "MusicPlayerPreroll"
+               );
 
-    CheckError(MusicPlayerStart(self.musicPlayer), "MusicPlayerStart");
+    CheckError(MusicPlayerStart(self.musicPlayer),
+               "MusicPlayerStart"
+               );
     
    
 }
 
 - (void) setPlayerTime:(float)playerStartTime {
-    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)playerStartTime), "MusicPlayerStart");
+    CheckError(MusicPlayerSetTime(self.musicPlayer,(MusicTimeStamp)playerStartTime),
+               "MusicPlayerStart"
+               );
 }
 
 - (MusicTimeStamp)getPlayTime {
     MusicTimeStamp currentTime;
     Boolean isPlaying;
+    
     CheckError(MusicPlayerGetTime(
                 self.musicPlayer,&currentTime),
                "MusicPlayerGetTime"
                );
 
-    CheckError(MusicPlayerIsPlaying(self.musicPlayer,&isPlaying),"MusicPlayerIsPlaying");
-    if (isPlaying && currentTime > 152.0 ) {
-        [self stopPlayintMIDIFile];
-    }
-    
-    if (!isPlaying) {
-        currentTime = -1.0;
-    }
-    
+    CheckError(MusicPlayerIsPlaying(self.musicPlayer,&isPlaying),
+               "MusicPlayerIsPlaying"
+               );
     return currentTime;
 }
 
@@ -640,26 +621,52 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
 - (void) stopPlayintMIDIFile
 {
     NSLog(@"stopping music player");
-       CheckError(MusicPlayerStop(self.musicPlayer), "MusicPlayerStop");
+    CheckError(MusicPlayerStop(self.musicPlayer),
+               "MusicPlayerStop"
+               );
 }
 
 
 -(void) cleanup
 {    
-    CheckError(MusicPlayerStop(self.musicPlayer), "MusicPlayerStop");
     
+    //stop the music player
+    CheckError(MusicPlayerStop(self.musicPlayer),
+               "MusicPlayerStop"
+               );
+    
+    //get number of tracks in sequence
     UInt32 trackCount;
-    CheckError(MusicSequenceGetTrackCount(self.musicSequence, &trackCount), "MusicSequenceGetTrackCount");
+    CheckError(MusicSequenceGetTrackCount(self.musicSequence, &trackCount),
+               "MusicSequenceGetTrackCount"
+               );
+    
+    //dispose of each track in sequence
     MusicTrack track;
     for(int i = 0;i < trackCount; i++)
     {
-        CheckError(MusicSequenceGetIndTrack (self.musicSequence,0,&track), "MusicSequenceGetIndTrack");
-        CheckError(MusicSequenceDisposeTrack(self.musicSequence, track), "MusicSequenceDisposeTrack");
+        CheckError(MusicSequenceGetIndTrack (self.musicSequence,0,&track),
+                   "MusicSequenceGetIndTrack"
+                   );
+        CheckError(MusicSequenceDisposeTrack(self.musicSequence, track),
+                   "MusicSequenceDisposeTrack"
+                   );
     }
     
-    CheckError(DisposeMusicPlayer(self.musicPlayer), "DisposeMusicPlayer");
-    CheckError(DisposeMusicSequence(self.musicSequence), "DisposeMusicSequence");
-    CheckError(DisposeAUGraph(self.processingGraph), "DisposeAUGraph");
+    //dispose of the music player
+    CheckError(DisposeMusicPlayer(self.musicPlayer),
+               "DisposeMusicPlayer"
+               );
+    
+    //dispose of the music sequence
+    CheckError(DisposeMusicSequence(self.musicSequence),
+               "DisposeMusicSequence"
+               );
+    
+    //dispose of the sound graph
+    CheckError(DisposeAUGraph(self.processingGraph),
+               "DisposeAUGraph"
+               );
 }
 
 @end
