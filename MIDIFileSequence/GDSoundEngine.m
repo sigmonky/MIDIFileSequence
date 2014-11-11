@@ -479,17 +479,30 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
     
     MusicTrackLoopInfo loopSetting = {};
-    loopSetting.loopDuration = 12;
+    loopSetting.loopDuration = 16;
     loopSetting.numberOfLoops = 0;
     
     MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
     MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
     
     
-    NSArray *keyBoard = @[@[@0,@[@60,@64,@67],@3.9],@[@4,@[@60,@65,@69],@3.9],@[@8,@[@59,@62,@67],@3.9]];
-     
-     for ( int16_t chordNumber = 0; chordNumber < keyBoard.count; chordNumber++) {
-         NSArray *currentChord = keyBoard[chordNumber];
+    NSMutableDictionary *piano = [[NSMutableDictionary alloc] init];
+    piano[@"name"] = @"piano";
+    piano[@"midiInstrument"] = @0;
+    piano[@"performance"] = @[@[@0,@[@60,@64,@67],@4.0],@[@4,@[@60,@65,@69],@4.0],@[@8,@[@59,@62,@67],@8.0]];
+    
+    NSMutableDictionary *bass = [[NSMutableDictionary alloc] init];
+    bass[@"name"] = @"bass";
+    bass[@"midiInstrument"] = @32;
+    bass[@"performance"] = @[@[@0,@[@36],@4.0],@[@4,@[@41],@4.0],@[@8,@[@43],@8.0]];
+    
+    NSArray *theBand = @[piano,bass];
+    
+    
+    NSArray *keyboardPerformance = theBand[0][@"performance"];
+    
+     for ( int16_t chordNumber = 0; chordNumber < keyboardPerformance.count; chordNumber++) {
+         NSArray *currentChord = keyboardPerformance[chordNumber];
          int8_t beat =  [currentChord[0] integerValue];
          int8_t duration = [currentChord[2] integerValue];
          NSArray *notesInChord = currentChord[1];
@@ -503,10 +516,11 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
          }
      }
     
-    NSArray *bass = @[@[@0,@[@36],@3.9],@[@4,@[@41],@3.9],@[@8,@[@43],@3.9]];
     
-    for ( int16_t chordNumber = 0; chordNumber < bass.count; chordNumber++) {
-        NSArray *currentChord = bass[chordNumber];
+    NSArray *bassPerformance = theBand[1][@"performance"];
+    
+    for ( int16_t chordNumber = 0; chordNumber < bassPerformance.count; chordNumber++) {
+        NSArray *currentChord = bassPerformance[chordNumber];
         int8_t beat =  [currentChord[0] integerValue];
         int8_t duration = [currentChord[2] integerValue];
         NSArray *notesInChord = currentChord[1];
