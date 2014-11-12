@@ -473,18 +473,6 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     [self startGraph];
     [self setUpPlayerAndSequence];
     
-    MusicTrack track1,track2;
-    
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track1),"MusicSequenceNewTrack");
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
-    
-    MusicTrackLoopInfo loopSetting = {};
-    loopSetting.loopDuration = 16;
-    loopSetting.numberOfLoops = 0;
-    
-    MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
-    MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
-    
     
     NSMutableDictionary *piano = [[NSMutableDictionary alloc] init];
     piano[@"name"] = @"piano";
@@ -496,7 +484,50 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     bass[@"midiInstrument"] = @32;
     bass[@"performance"] = @[@[@0,@[@36],@4.0],@[@4,@[@41],@4.0],@[@8,@[@43],@8.0]];
     
-    NSArray *theBand = @[piano,bass];
+    NSMutableDictionary *drums = [[NSMutableDictionary alloc] init];
+    drums[@"name"] = @"drums";
+    drums[@"midiInstrument"] = @115;
+    drums[@"performance"] = @[
+                            @[@0,  @[@80],@1.0],
+                            @[@0.5,@[@120],@0.2],
+                            @[@1,@[@100],@1.0],@[@2,@[@60],@1.0],@[@3,@[@100],@1.0],
+                            @[@4,@[@100],@1.0],@[@5,@[@100],@1.0],@[@6,@[@100],@1.0],@[@7,@[@100],@1.0],
+                            @[@8,@[@100],@1.0],@[@9,@[@100],@1.0],@[@10,@[@100],@1.0],@[@11,@[@100],@1.0],
+                            @[@12,@[@100],@1.0],@[@13,@[@100],@1.0],@[@14,@[@100],@1.0],@[@15,@[@100],@1.0]
+                            ];
+    
+    /*
+     ,@[@1,@[@100],@1.0],@[@2,@[@100],@1.0],@[@3,@[@100],@1.0],
+     @[@4,@[@100],@1.0],@[@5,@[@100],@1.0],@[@6,@[@100],@1.0],@[@7,@[@100],@1.0],
+     @[@8,@[@100],@1.0],@[@9,@[@100],@1.0],@[@10,@[@100],@1.0],@[@11,@[@100],@1.0],
+     @[@12,@[@100],@1.0],@[@13,@[@100],@1.0],@[@14,@[@100],@1.0],@[@15,@[@100],@1.0]
+     */
+    
+    NSArray *theBand = @[piano,bass,drums];
+    
+    MusicTrack track1,track2,track3;
+    
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&track1),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&track3),"MusicSequenceNewTrack");
+    
+    MusicTrack x = CFBridgingRetain([NSValue valueWithBytes:&track1 objCType:@encode(MusicTrack)]);
+
+    
+    MusicTrackLoopInfo loopSetting = {};
+    loopSetting.loopDuration = 16;
+    loopSetting.numberOfLoops = 0;
+    
+    MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    
+    loopSetting.loopDuration = 16;
+    loopSetting.numberOfLoops = 0;
+    
+    MusicTrackSetProperty ( track3, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    
+    
+    
     
     
     NSArray *keyboardPerformance = theBand[0][@"performance"];
@@ -531,6 +562,23 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
             voice.velocity = 100;
             voice.channel = 1;
             MusicTrackNewMIDINoteEvent(track2, beat, &voice);
+        }
+    }
+    
+    NSArray *drumPerformance = theBand[2][@"performance"];
+    
+    for ( int16_t chordNumber = 0; chordNumber < drumPerformance.count; chordNumber++) {
+        NSArray *currentChord = drumPerformance[chordNumber];
+        int8_t beat =  [currentChord[0] integerValue];
+        int8_t duration = [currentChord[2] integerValue];
+        NSArray *notesInChord = currentChord[1];
+        for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
+            MIDINoteMessage voice;
+            voice.duration = duration;
+            voice.note = [notesInChord[noteNumber] integerValue];
+            voice.velocity = 100;
+            voice.channel = 1;
+            MusicTrackNewMIDINoteEvent(track3, beat, &voice);
         }
     }
 
