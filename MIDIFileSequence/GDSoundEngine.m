@@ -477,7 +477,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     NSMutableDictionary *piano = [[NSMutableDictionary alloc] init];
     piano[@"name"] = @"piano";
     piano[@"midiInstrument"] = @0;
-    piano[@"performance"] = @[@[@0,@[@60,@64,@67],@4.0],@[@4,@[@60,@65,@69],@4.0],@[@8,@[@59,@62,@67],@8.0]];
+    piano[@"performance"] = @[@[@0,@[@60,@63,@67],@4.0],@[@4,@[@60,@65,@68],@4.0],@[@8,@[@59,@62,@68],@8.0]];
     
     NSMutableDictionary *bass = [[NSMutableDictionary alloc] init];
     bass[@"name"] = @"bass";
@@ -488,13 +488,11 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     drums[@"name"] = @"drums";
     drums[@"midiInstrument"] = @115;
     drums[@"performance"] = @[
-                            @[@0,  @[@80],@1.0],
-                            @[@0.5,@[@120],@0.2],
-                            @[@1,@[@100],@1.0],@[@2,@[@60],@1.0],@[@3,@[@100],@1.0],
+                            @[@0, @[@20],@0.4],@[@0.5, @[@80],@0.2],@[@0.75, @[@80],@0.2]]/*,@[@1,@[@40],@1.0],@[@2,@[@60],@1.0],@[@3,@[@40],@1.0],
                             @[@4,@[@100],@1.0],@[@5,@[@100],@1.0],@[@6,@[@100],@1.0],@[@7,@[@100],@1.0],
                             @[@8,@[@100],@1.0],@[@9,@[@100],@1.0],@[@10,@[@100],@1.0],@[@11,@[@100],@1.0],
                             @[@12,@[@100],@1.0],@[@13,@[@100],@1.0],@[@14,@[@100],@1.0],@[@15,@[@100],@1.0]
-                            ];
+                            ]*/;
     
     /*
      ,@[@1,@[@100],@1.0],@[@2,@[@100],@1.0],@[@3,@[@100],@1.0],
@@ -506,25 +504,34 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     NSArray *theBand = @[piano,bass,drums];
     
     MusicTrack track1,track2,track3;
+    MusicTrack tracks[3];
     
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track1),"MusicSequenceNewTrack");
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track2),"MusicSequenceNewTrack");
-    CheckError(MusicSequenceNewTrack(self.musicSequence,&track3),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&tracks[0]),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&tracks[1]),"MusicSequenceNewTrack");
+    CheckError(MusicSequenceNewTrack(self.musicSequence,&tracks[2]),"MusicSequenceNewTrack");
     
-    MusicTrack x = CFBridgingRetain([NSValue valueWithBytes:&track1 objCType:@encode(MusicTrack)]);
+    //NSValue *testValue = [NSValue valueWithBytes:&track1 objCType:@encode(MusicTrack)];
+    //NSArray *testArray = @[testValue];
+    
+    //MusicTrack x = CFBridgingRetain([NSValue valueWithBytes:testArray[0] objCType:@encode(MusicTrack)]);
 
     
     MusicTrackLoopInfo loopSetting = {};
     loopSetting.loopDuration = 16;
     loopSetting.numberOfLoops = 0;
     
-    MusicTrackSetProperty ( track1, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
-    MusicTrackSetProperty ( track2, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
     
-    loopSetting.loopDuration = 16;
+    
+    MusicTrackSetProperty ( tracks[0], kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    MusicTrackSetProperty ( tracks[1], kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    
+    loopSetting.loopDuration = 1;
     loopSetting.numberOfLoops = 0;
     
-    MusicTrackSetProperty ( track3, kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    MusicTimeStamp offsetTime = 0.0;
+    
+    MusicTrackSetProperty ( tracks[2], kSequenceTrackProperty_LoopInfo, &loopSetting, sizeof(loopSetting));
+    MusicTrackSetProperty ( tracks[2], kSequenceTrackProperty_OffsetTime, &offsetTime, sizeof(offsetTime));
     
     
     
@@ -534,8 +541,8 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
      for ( int16_t chordNumber = 0; chordNumber < keyboardPerformance.count; chordNumber++) {
          NSArray *currentChord = keyboardPerformance[chordNumber];
-         int8_t beat =  [currentChord[0] integerValue];
-         int8_t duration = [currentChord[2] integerValue];
+         float beat =  [currentChord[0] floatValue];
+         float duration = [currentChord[2] floatValue];
          NSArray *notesInChord = currentChord[1];
          for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
              MIDINoteMessage voice;
@@ -543,7 +550,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
              voice.note = [notesInChord[noteNumber] integerValue];
              voice.velocity = 100;
              voice.channel = 1;
-             MusicTrackNewMIDINoteEvent(track1, beat, &voice);
+             MusicTrackNewMIDINoteEvent(tracks[0], beat, &voice);
          }
      }
     
@@ -552,8 +559,8 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     for ( int16_t chordNumber = 0; chordNumber < bassPerformance.count; chordNumber++) {
         NSArray *currentChord = bassPerformance[chordNumber];
-        int8_t beat =  [currentChord[0] integerValue];
-        int8_t duration = [currentChord[2] integerValue];
+        float beat =  [currentChord[0] floatValue];
+        float duration = [currentChord[2] floatValue];
         NSArray *notesInChord = currentChord[1];
         for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
             MIDINoteMessage voice;
@@ -561,7 +568,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
             voice.note = [notesInChord[noteNumber] integerValue];
             voice.velocity = 100;
             voice.channel = 1;
-            MusicTrackNewMIDINoteEvent(track2, beat, &voice);
+            MusicTrackNewMIDINoteEvent(tracks[1], beat, &voice);
         }
     }
     
@@ -569,8 +576,8 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     for ( int16_t chordNumber = 0; chordNumber < drumPerformance.count; chordNumber++) {
         NSArray *currentChord = drumPerformance[chordNumber];
-        int8_t beat =  [currentChord[0] integerValue];
-        int8_t duration = [currentChord[2] integerValue];
+        float beat =  [currentChord[0] floatValue];
+        float duration = [currentChord[2] floatValue];
         NSArray *notesInChord = currentChord[1];
         for (int8_t noteNumber = 0; noteNumber < notesInChord.count; noteNumber++ ) {
             MIDINoteMessage voice;
@@ -578,7 +585,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
             voice.note = [notesInChord[noteNumber] integerValue];
             voice.velocity = 100;
             voice.channel = 1;
-            MusicTrackNewMIDINoteEvent(track3, beat, &voice);
+            MusicTrackNewMIDINoteEvent(tracks[2], beat, &voice);
         }
     }
 
@@ -608,8 +615,8 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     NSAssert( result == noErr, @"MIDIDestinationCreate failed. Error code: %d '%.4s'", (int) result, (const char *)&result);
     
     // Set the endpoint of the sequence to be our virtual endpoint
-    MusicTrackSetDestMIDIEndpoint(track1, virtualEndpoint1);
-    MusicTrackSetDestMIDIEndpoint(track2, virtualEndpoint2);
+    MusicTrackSetDestMIDIEndpoint(tracks[0], virtualEndpoint1);
+    MusicTrackSetDestMIDIEndpoint(tracks[1], virtualEndpoint2);
     
 
 }
