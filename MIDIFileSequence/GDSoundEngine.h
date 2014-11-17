@@ -21,7 +21,7 @@
 
 - (void)playNoteOn:(UInt32)noteNum :(UInt32)velocity;
 - (void)playNoteOff:(UInt32)noteNum;
-- (void)generateMIDIFile:(NSString *)midifileName;
+- (void)generateMIDIFile:(NSArray *)bandPlayingSong;
 - (void) playMIDIFile:(MusicTimeStamp)startPoint
          playBackRate:(float)playBackRate;
 - (void) stopPlayintMIDIFile;

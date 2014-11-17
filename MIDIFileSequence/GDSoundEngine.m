@@ -17,6 +17,8 @@
 
 @interface GDSoundEngine()
 
+
+
 @property (readwrite) AUGraph processingGraph;
 @property (readwrite) AUNode samplerNode1,samplerNode2,samplerNode3;
 @property (readwrite) AUNode mixerNode;
@@ -28,13 +30,17 @@
 
 @end
 
-@implementation GDSoundEngine
+@implementation GDSoundEngine {
+   
+}
 
+static GDSoundEngine *refToSelf;
 
 - (id) init 
 {
     if ( self = [super init] ) {
-        
+       
+        refToSelf = self;
         
     }
     
@@ -383,8 +389,10 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
         Byte midiStatus = packet->data[0];
         Byte midiCommand = midiStatus >> 4;
         
+       
         
         if (midiCommand == 0x09) {
+            
             Byte note = packet->data[1] & 0x7F;
             Byte velocity = packet->data[2] & 0x7F;
             
@@ -430,11 +438,13 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
                 default:
                     break;
             }
-            NSLog([noteType stringByAppendingFormat:[NSString stringWithFormat:@": %i", noteNumber]]);
+            NSLog(@"%@: %i",noteType,noteNumber);
             
             
             OSStatus result = noErr;
+            //result = MusicDeviceMIDIEvent (player, midiStatus, 83, 127, 0);
             result = MusicDeviceMIDIEvent (player, midiStatus, note, velocity, 0);
+             //[refToSelf playNoteOn:note :127]; [refToSelf playNoteOn:100 :127];
         }
         packet = MIDIPacketNext(packet);
     }
@@ -465,7 +475,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
 
 
 
- - (void)generateMIDIFile:(NSString *)midifileName
+ - (void)generateMIDIFile:(NSArray *)bandPlayingSong
 {
     
     
@@ -474,36 +484,8 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     [self setUpPlayerAndSequence];
     
     
-    NSMutableDictionary *piano = [[NSMutableDictionary alloc] init];
-    piano[@"name"] = @"piano";
-    piano[@"midiInstrument"] = @0;
-    piano[@"performance"] = @[@[@0,@[@60,@63,@67],@4.0],@[@4,@[@60,@65,@68],@4.0],@[@8,@[@59,@62,@68],@8.0]];
     
-    NSMutableDictionary *bass = [[NSMutableDictionary alloc] init];
-    bass[@"name"] = @"bass";
-    bass[@"midiInstrument"] = @32;
-    bass[@"performance"] = @[@[@0,@[@36],@4.0],@[@4,@[@41],@4.0],@[@8,@[@43],@8.0]];
-    
-    NSMutableDictionary *drums = [[NSMutableDictionary alloc] init];
-    drums[@"name"] = @"drums";
-    drums[@"midiInstrument"] = @115;
-    drums[@"performance"] = @[
-                            @[@0, @[@20],@0.4],@[@0.5, @[@80],@0.2],@[@0.75, @[@80],@0.2]]/*,@[@1,@[@40],@1.0],@[@2,@[@60],@1.0],@[@3,@[@40],@1.0],
-                            @[@4,@[@100],@1.0],@[@5,@[@100],@1.0],@[@6,@[@100],@1.0],@[@7,@[@100],@1.0],
-                            @[@8,@[@100],@1.0],@[@9,@[@100],@1.0],@[@10,@[@100],@1.0],@[@11,@[@100],@1.0],
-                            @[@12,@[@100],@1.0],@[@13,@[@100],@1.0],@[@14,@[@100],@1.0],@[@15,@[@100],@1.0]
-                            ]*/;
-    
-    /*
-     ,@[@1,@[@100],@1.0],@[@2,@[@100],@1.0],@[@3,@[@100],@1.0],
-     @[@4,@[@100],@1.0],@[@5,@[@100],@1.0],@[@6,@[@100],@1.0],@[@7,@[@100],@1.0],
-     @[@8,@[@100],@1.0],@[@9,@[@100],@1.0],@[@10,@[@100],@1.0],@[@11,@[@100],@1.0],
-     @[@12,@[@100],@1.0],@[@13,@[@100],@1.0],@[@14,@[@100],@1.0],@[@15,@[@100],@1.0]
-     */
-    
-    NSArray *theBand = @[piano,bass,drums];
-    
-    MusicTrack track1,track2,track3;
+   // MusicTrack track1,track2,track3;
     MusicTrack tracks[3];
     
     CheckError(MusicSequenceNewTrack(self.musicSequence,&tracks[0]),"MusicSequenceNewTrack");
@@ -537,7 +519,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     
     
-    NSArray *keyboardPerformance = theBand[0][@"performance"];
+    NSArray *keyboardPerformance = bandPlayingSong[0][@"performance"];
     
      for ( int16_t chordNumber = 0; chordNumber < keyboardPerformance.count; chordNumber++) {
          NSArray *currentChord = keyboardPerformance[chordNumber];
@@ -555,7 +537,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
      }
     
     
-    NSArray *bassPerformance = theBand[1][@"performance"];
+    NSArray *bassPerformance = bandPlayingSong[1][@"performance"];
     
     for ( int16_t chordNumber = 0; chordNumber < bassPerformance.count; chordNumber++) {
         NSArray *currentChord = bassPerformance[chordNumber];
@@ -572,7 +554,7 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
         }
     }
     
-    NSArray *drumPerformance = theBand[2][@"performance"];
+    NSArray *drumPerformance = bandPlayingSong[2][@"performance"];
     
     for ( int16_t chordNumber = 0; chordNumber < drumPerformance.count; chordNumber++) {
         NSArray *currentChord = drumPerformance[chordNumber];

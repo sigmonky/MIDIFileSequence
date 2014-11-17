@@ -31,6 +31,7 @@
 		BE8661F71948E47F00AF4459 /* GDLibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8661F61948E47F00AF4459 /* GDLibraryTableViewController.m */; };
 		BE8661FA1948E80E00AF4459 /* Tune.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8661F91948E80E00AF4459 /* Tune.m */; };
 		BEA077AB193E85D4003DCB00 /* Embraceable You.mid in Resources */ = {isa = PBXBuildFile; fileRef = BEA077AA193E85D4003DCB00 /* Embraceable You.mid */; };
+		D30DA0C01A1924D40094E622 /* Chord.m in Sources */ = {isa = PBXBuildFile; fileRef = D30DA0BF1A1924D40094E622 /* Chord.m */; };
 		D31088C6195F4058004351D3 /* fluid_gm.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = D31088C5195F4058004351D3 /* fluid_gm.sf2 */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,8 @@
 		BE8661F91948E80E00AF4459 /* Tune.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tune.m; sourceTree = "<group>"; };
 		BEA077AA193E85D4003DCB00 /* Embraceable You.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Embraceable You.mid"; sourceTree = "<group>"; };
 		BEE9EA2A191A89F800CDEE47 /* MIDIFileSequence copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MIDIFileSequence copy-Info.plist"; path = "/Users/weinster/Documents/iosProjects/MIDIFileSequence/MIDIFileSequence copy-Info.plist"; sourceTree = "<absolute>"; };
+		D30DA0BE1A1924D40094E622 /* Chord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chord.h; path = ChordModel/Chord.h; sourceTree = "<group>"; };
+		D30DA0BF1A1924D40094E622 /* Chord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Chord.m; path = ChordModel/Chord.m; sourceTree = "<group>"; };
 		D31088C5195F4058004351D3 /* fluid_gm.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = fluid_gm.sf2; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +155,7 @@
 		B012A0CD159A21E9009A381D /* MIDIFileSequence */ = {
 			isa = PBXGroup;
 			children = (
+				D30DA0BD1A19247A0094E622 /* ChordModel */,
 				BE17330C1A0BD03B00E5FEF4 /* Sound Engine */,
 				B012A0D6159A21E9009A381D /* GDAppDelegate.h */,
 				B012A0D7159A21E9009A381D /* GDAppDelegate.m */,
@@ -215,6 +219,15 @@
 				B012A105159A223D009A381D /* GDSoundEngine.m */,
 			);
 			name = "Sound Engine";
+			sourceTree = "<group>";
+		};
+		D30DA0BD1A19247A0094E622 /* ChordModel */ = {
+			isa = PBXGroup;
+			children = (
+				D30DA0BE1A1924D40094E622 /* Chord.h */,
+				D30DA0BF1A1924D40094E622 /* Chord.m */,
+			);
+			name = ChordModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,6 +347,7 @@
 			files = (
 				BE8661F71948E47F00AF4459 /* GDLibraryTableViewController.m in Sources */,
 				B012A0D4159A21E9009A381D /* main.m in Sources */,
+				D30DA0C01A1924D40094E622 /* Chord.m in Sources */,
 				B012A0D8159A21E9009A381D /* GDAppDelegate.m in Sources */,
 				B012A0DE159A21EA009A381D /* GDViewController.m in Sources */,
 				B012A106159A223D009A381D /* GDCoreAudioUtils.c in Sources */,
