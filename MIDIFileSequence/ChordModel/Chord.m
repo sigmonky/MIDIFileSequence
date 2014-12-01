@@ -11,6 +11,19 @@
 @implementation Chord
 
 
+-(id) initWithRoot:(int16_t)root
+           quality:(int16_t)quality
+         extension:(NSMutableArray *)extensions
+{
+    self = [super init];
+    if (self) {
+        self.root = root;
+        self.quality = quality;
+        self.extensions = extensions;
+    }
+    return self;
+}
+
 
 - (NSMutableArray *) getChordMembers {
     
@@ -24,16 +37,21 @@
     chordIntervals[ChordQualityDiminished] = @[@3,@6];
     chordIntervals[ChordQualityAugmented] = @[@4,@8];
     chordIntervals[ChordQualityDominant] = @[@4,@7,@10];
+    chordIntervals[ChordQualitySuspended] = @[@5,@11];
     
-    chordMembers[0] = [NSNumber numberWithInt:self.Root];
+    chordMembers[0] = [NSNumber numberWithInt:self.root];
 
     
-    for (int16_t x = 0; x <  [chordIntervals[self.Quality] count];x++) {
-        nextMember = [chordIntervals[self.Quality][x] integerValue];
-        chordMembers[x+1] = [NSNumber numberWithLong:self.Root + nextMember];
+    for (int16_t x = 0; x <  [chordIntervals[self.quality] count];x++) {
+        nextMember = [chordIntervals[self.quality][x] integerValue];
+        chordMembers[x+1] = [NSNumber numberWithLong:self.root + nextMember];
     }
     
     return chordMembers;
     
+}
+
+- (int16_t) getBassNote {
+    return self.root - 24;
 }
 @end

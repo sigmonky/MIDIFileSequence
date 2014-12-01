@@ -9,6 +9,8 @@
 #import "GDViewController.h"
 #import "GDSoundEngine.h"
 #import "Chord.h"
+#import "Player.h"
+#import "Progression.h"
 
 @interface GDViewController ()
 @property (strong) id soundEngine;
@@ -69,29 +71,47 @@ MusicTimeStamp endBeat = 0.0;
 
 - (IBAction)generateMidi:(id)sender {
     
-    Chord *firstChord = [Chord new];
+    
+    Chord *currentChord = [[Chord alloc] initWithRoot:60 quality:ChordQualityMajor extension:nil];
+    
+    Progression *progression = [Progression new];
+    progression.chordProgression = @
+            [
+                [[Chord alloc] initWithRoot:60 quality:ChordQualityMinor extension:nil],
+                [[Chord alloc] initWithRoot:65 quality:ChordQualityDominant extension:nil],
+                [[Chord alloc] initWithRoot:67 quality:ChordQualityMajor extension:nil],
+             
+            ];
 
-    firstChord.Root = 60;
-    firstChord.Quality = ChordQualityDominant;
     
-    NSMutableArray *chordMembers = [firstChord getChordMembers];
     
-    NSLog(@"loading ...%@",_currentTune.fileName);
-    NSMutableDictionary *piano = [[NSMutableDictionary alloc] init];
-    piano[@"name"] = @"piano";
-    piano[@"midiInstrument"] = @0;
-    piano[@"performance"] = @[@[@0,chordMembers,@4.0],@[@4,@[@60,@65,@68],@4.0],@[@8,@[@59,@62,@68],@8.0]];
     
-    NSMutableDictionary *bass = [[NSMutableDictionary alloc] init];
-    bass[@"name"] = @"bass";
-    bass[@"midiInstrument"] = @32;
-    bass[@"performance"] = @[@[@0,@[@36],@4.0],@[@4,@[@41],@4.0],@[@8,@[@43],@8.0]];
     
-    NSMutableDictionary *drums = [[NSMutableDictionary alloc] init];
-    drums[@"name"] = @"drums";
-    drums[@"midiInstrument"] = @115;
-    drums[@"performance"] = @[
-                              @[@0, @[@20],@0.4],@[@0.5, @[@80],@0.2],@[@0.75, @[@80],@0.2]];
+    NSMutableArray *chordMembers1 = [currentChord getChordMembers];
+    int16_t bassNote1 = [currentChord getBassNote];
+    
+    Player *piano = [Player new];
+    piano.instrument = @"piano";
+    piano.midiInstrument = @0;
+    piano.performance = [progression basicChordProgression];
+    
+    
+    
+    Player *bass = [Player new];
+    bass.instrument = @"bass";
+    bass.midiInstrument = @32;
+    bass.performance = [progression bassLine];
+    
+    
+    Player *drums = [Player new];
+    drums.instrument = @"drums";
+    drums.midiInstrument = @115;
+    drums.performance = (NSMutableArray *)
+                @[
+                    @[@0, @[@20],@0.4],
+                    @[@0.5, @[@80],@0.2],
+                    @[@0.75, @[@80],@0.2]
+                 ];
     
     
     NSArray *bandPlayingSong = @[piano,bass,drums];

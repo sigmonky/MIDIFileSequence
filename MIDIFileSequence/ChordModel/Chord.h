@@ -15,6 +15,7 @@ typedef NS_ENUM(int16_t, ChordQualities) {
     ChordQualityDiminished,
     ChordQualityAugmented,
     ChordQualityDominant,
+    ChordQualitySuspended
 };
 
 typedef NS_ENUM(int16_t, ChordExtensions) {
@@ -31,10 +32,15 @@ typedef NS_ENUM(int16_t, ChordExtensions) {
 };
 
 @interface Chord : NSObject
-@property (nonatomic,assign) int16_t Root;
-@property (nonatomic,assign) int16_t Quality;
+@property (nonatomic,assign) int16_t root;
+@property (nonatomic,assign) int16_t quality;
 @property (nonatomic,strong) NSMutableArray *extensions;
 
+-(id) initWithRoot:(int16_t)root
+           quality:(int16_t)quality
+         extension:(NSMutableArray *)extensions;
+
 - (NSMutableArray *)getChordMembers;
+- (int16_t)getBassNote;
 
 @end

@@ -14,6 +14,7 @@
 #import <CoreAudio/CoreAudioTypes.h>
 #import "GDCoreAudioUtils.h"
 #import "GDSoundEngine.h"
+#import "Player.h"
 
 @interface GDSoundEngine()
 
@@ -517,9 +518,9 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
     
     
     
+    Player *keyboard = bandPlayingSong[0];
     
-    
-    NSArray *keyboardPerformance = bandPlayingSong[0][@"performance"];
+    NSArray *keyboardPerformance =  keyboard.performance;
     
      for ( int16_t chordNumber = 0; chordNumber < keyboardPerformance.count; chordNumber++) {
          NSArray *currentChord = keyboardPerformance[chordNumber];
@@ -536,8 +537,9 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
          }
      }
     
+    Player *bass = bandPlayingSong[1];
     
-    NSArray *bassPerformance = bandPlayingSong[1][@"performance"];
+    NSArray *bassPerformance = bass.performance;
     
     for ( int16_t chordNumber = 0; chordNumber < bassPerformance.count; chordNumber++) {
         NSArray *currentChord = bassPerformance[chordNumber];
@@ -554,7 +556,9 @@ static void MyMIDIReadProc(const MIDIPacketList *pktlist,
         }
     }
     
-    NSArray *drumPerformance = bandPlayingSong[2][@"performance"];
+    Player *drums = bandPlayingSong[2];
+    
+    NSArray *drumPerformance = drums.performance;
     
     for ( int16_t chordNumber = 0; chordNumber < drumPerformance.count; chordNumber++) {
         NSArray *currentChord = drumPerformance[chordNumber];

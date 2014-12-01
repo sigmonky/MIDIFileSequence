@@ -32,6 +32,8 @@
 		BE8661FA1948E80E00AF4459 /* Tune.m in Sources */ = {isa = PBXBuildFile; fileRef = BE8661F91948E80E00AF4459 /* Tune.m */; };
 		BEA077AB193E85D4003DCB00 /* Embraceable You.mid in Resources */ = {isa = PBXBuildFile; fileRef = BEA077AA193E85D4003DCB00 /* Embraceable You.mid */; };
 		D30DA0C01A1924D40094E622 /* Chord.m in Sources */ = {isa = PBXBuildFile; fileRef = D30DA0BF1A1924D40094E622 /* Chord.m */; };
+		D30DA0C61A25EEC50094E622 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = D30DA0C51A25EEC50094E622 /* Player.m */; };
+		D30DA0CC1A25F6BD0094E622 /* Progression.m in Sources */ = {isa = PBXBuildFile; fileRef = D30DA0CB1A25F6BD0094E622 /* Progression.m */; };
 		D31088C6195F4058004351D3 /* fluid_gm.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = D31088C5195F4058004351D3 /* fluid_gm.sf2 */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +86,10 @@
 		BEE9EA2A191A89F800CDEE47 /* MIDIFileSequence copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MIDIFileSequence copy-Info.plist"; path = "/Users/weinster/Documents/iosProjects/MIDIFileSequence/MIDIFileSequence copy-Info.plist"; sourceTree = "<absolute>"; };
 		D30DA0BE1A1924D40094E622 /* Chord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chord.h; path = ChordModel/Chord.h; sourceTree = "<group>"; };
 		D30DA0BF1A1924D40094E622 /* Chord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Chord.m; path = ChordModel/Chord.m; sourceTree = "<group>"; };
+		D30DA0C41A25EEC50094E622 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Player.h; path = ../Player.h; sourceTree = "<group>"; };
+		D30DA0C51A25EEC50094E622 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Player.m; path = ../Player.m; sourceTree = "<group>"; };
+		D30DA0CA1A25F6BD0094E622 /* Progression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Progression.h; sourceTree = "<group>"; };
+		D30DA0CB1A25F6BD0094E622 /* Progression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Progression.m; sourceTree = "<group>"; };
 		D31088C5195F4058004351D3 /* fluid_gm.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = fluid_gm.sf2; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -116,6 +122,8 @@
 		B012A0B8159A21E8009A381D = {
 			isa = PBXGroup;
 			children = (
+				D30DA0CA1A25F6BD0094E622 /* Progression.h */,
+				D30DA0CB1A25F6BD0094E622 /* Progression.m */,
 				BE164B451A09620300158756 /* tunes */,
 				D31088C5195F4058004351D3 /* fluid_gm.sf2 */,
 				BE8661F51948E47F00AF4459 /* GDLibraryTableViewController.h */,
@@ -155,6 +163,8 @@
 		B012A0CD159A21E9009A381D /* MIDIFileSequence */ = {
 			isa = PBXGroup;
 			children = (
+				D30DA0C41A25EEC50094E622 /* Player.h */,
+				D30DA0C51A25EEC50094E622 /* Player.m */,
 				D30DA0BD1A19247A0094E622 /* ChordModel */,
 				BE17330C1A0BD03B00E5FEF4 /* Sound Engine */,
 				B012A0D6159A21E9009A381D /* GDAppDelegate.h */,
@@ -352,7 +362,9 @@
 				B012A0DE159A21EA009A381D /* GDViewController.m in Sources */,
 				B012A106159A223D009A381D /* GDCoreAudioUtils.c in Sources */,
 				B012A107159A223D009A381D /* GDSoundEngine.m in Sources */,
+				D30DA0C61A25EEC50094E622 /* Player.m in Sources */,
 				BE8661FA1948E80E00AF4459 /* Tune.m in Sources */,
+				D30DA0CC1A25F6BD0094E622 /* Progression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
