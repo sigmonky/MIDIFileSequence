@@ -26,7 +26,7 @@
                                         ];
         
         [renderedProgression addObject: progressionElement];
-         placement += 4;
+         placement += duration;
     }
     
     return renderedProgression;
@@ -35,8 +35,27 @@
 - (NSMutableArray *) voicedChordProgression {
     
     NSMutableArray *renderedProgression = [NSMutableArray new];
+    NSMutableArray *lastVoicing = [NSMutableArray new];
+    
     for ( int16_t index = 0; index < [self.chordProgression count]; index++) {
-        
+       Chord *currentChord = self.chordProgression[index];
+        if ( index > 0 ) {
+            
+            NSMutableArray *chordMembers = [currentChord getChordMembers];
+            
+            for ( int16_t chordMember = 0; chordMember < chordMembers.count; chordMember++ ) {
+                
+                int16_t currentChordMember = [chordMembers[chordMember] integerValue ];
+                
+                for ( int16_t voiceIndex = 0; voiceIndex < lastVoicing.count; voiceIndex++) {
+                    NSLog(@"%ld",currentChordMember - [lastVoicing[voiceIndex] integerValue]);
+                }
+            }
+            lastVoicing = [currentChord getChordMembers];
+        } else {
+            lastVoicing = [currentChord getChordMembers];
+        }
+    
     }
     
     return renderedProgression;

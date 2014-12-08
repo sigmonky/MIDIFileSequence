@@ -71,11 +71,8 @@ MusicTimeStamp endBeat = 0.0;
 
 - (IBAction)generateMidi:(id)sender {
     
-    
-    Chord *currentChord = [[Chord alloc] initWithRoot:60 quality:ChordQualityMajor extension:nil];
-    
     Progression *progression = [Progression new];
-    progression.chordProgression = @
+    progression.chordProgression = (NSMutableArray *)@
             [
                 [[Chord alloc] initWithRoot:60 quality:ChordQualityMinor extension:nil],
                 [[Chord alloc] initWithRoot:65 quality:ChordQualityDominant extension:nil],
@@ -84,17 +81,12 @@ MusicTimeStamp endBeat = 0.0;
             ];
 
     
-    
-    
-    
-    NSMutableArray *chordMembers1 = [currentChord getChordMembers];
-    int16_t bassNote1 = [currentChord getBassNote];
-    
     Player *piano = [Player new];
     piano.instrument = @"piano";
     piano.midiInstrument = @0;
     piano.performance = [progression basicChordProgression];
     
+    NSMutableArray *voicedProgression = [progression voicedChordProgression];
     
     
     Player *bass = [Player new];
