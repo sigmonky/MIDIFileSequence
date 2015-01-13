@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-typedef NS_ENUM(int16_t, ChordQualities) {
+typedef NS_ENUM(NSUInteger, ChordQualities) {
     ChordQualityMajor,
     ChordQualityMinor,
     ChordQualityDiminished,

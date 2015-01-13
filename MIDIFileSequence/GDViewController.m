@@ -72,18 +72,52 @@ MusicTimeStamp endBeat = 0.0;
 - (IBAction)generateMidi:(id)sender {
     
     Progression *progression = [Progression new];
+    
+    NSArray *tonicSubs = @[@0,@4,@9];
+    NSArray *subDominantSubs = @[@5,@2];
+    NSArray *dominantSubs = @[@7,@11];
+   
+    int tonicIndex = arc4random() % [tonicSubs count];
+    int tonicChordType;
+    
+    if ([tonicSubs[tonicIndex] integerValue] == 0 ) {
+        tonicChordType = ChordQualityMajor;
+    } else {
+        tonicChordType = ChordQualityMinor;
+    }
+    
+    
+    int  subDominantIndex = arc4random() % [subDominantSubs count];
+    int subDominantChordType;
+    
+    if ([subDominantSubs[subDominantIndex] integerValue] == 5 ) {
+        subDominantChordType = ChordQualityMajor;
+    } else {
+         subDominantChordType = ChordQualityMinor;
+    }
+    
+    NSInteger dominantIndex = arc4random() % [dominantSubs count];
+    
+   NSInteger  adjustTonic = [tonicSubs[tonicIndex] integerValue];
+   NSInteger  tonic = 60 + adjustTonic;
+    
+    NSInteger adjustSubdominant = [subDominantSubs[subDominantIndex] integerValue];
+   NSInteger subDominant = 60 + adjustSubdominant;
+    NSUInteger dominant = 60 + (NSUInteger)dominantSubs[dominantIndex];
+    
     progression.chordProgression = (NSMutableArray *)@
             [
-                [[Chord alloc] initWithRoot:60 quality:ChordQualityMinor extension:nil],
-                [[Chord alloc] initWithRoot:65 quality:ChordQualityDominant extension:nil],
-                [[Chord alloc] initWithRoot:67 quality:ChordQualityMajor extension:nil],
+                [[Chord alloc] initWithRoot:tonic  quality:tonicChordType extension:nil],
+                [[Chord alloc] initWithRoot:subDominant quality:subDominantChordType extension:nil],
+                [[Chord alloc] initWithRoot:67 quality:ChordQualityMajor extension:nil]
+             
              
             ];
 
     
     Player *piano = [Player new];
     piano.instrument = @"piano";
-    piano.midiInstrument = @0;
+    piano.midiInstrument = @5;
     piano.performance = [progression basicChordProgression];
     
     NSMutableArray *voicedProgression = [progression voicedChordProgression];
