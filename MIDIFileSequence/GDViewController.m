@@ -102,7 +102,7 @@ MusicTimeStamp endBeat = 0.0;
    NSInteger  tonic = 60 + adjustTonic;
     
     NSInteger adjustSubdominant = [subDominantSubs[subDominantIndex] integerValue];
-   NSInteger subDominant = 60 + adjustSubdominant;
+    NSInteger subDominant = 60 + adjustSubdominant;
     NSUInteger dominant = 60 + (NSUInteger)dominantSubs[dominantIndex];
     
     progression.chordProgression = (NSMutableArray *)@
@@ -134,9 +134,7 @@ MusicTimeStamp endBeat = 0.0;
     drums.midiInstrument = @115;
     drums.performance = (NSMutableArray *)
                 @[
-                    @[@0, @[@20],@0.4],
-                    @[@0.5, @[@80],@0.2],
-                    @[@0.75, @[@80],@0.2]
+                    @[@0, @[@80],@0.5],
                  ];
     
     
