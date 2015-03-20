@@ -71,7 +71,7 @@ MusicTimeStamp endBeat = 0.0;
 
 - (IBAction)generateMidi:(id)sender {
     
-    Progression *progression = [Progression new];
+    Progression *progression = [[Progression alloc ] init];
     
     NSArray *tonicSubs = @[@0,@4,@9];
     NSArray *subDominantSubs = @[@5,@2];
